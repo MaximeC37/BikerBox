@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "22099949534",
+    "project_id": "bikerbox-1f761",
+    "storage_bucket": "bikerbox-1f761.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22099949534:android:1f22eeab7b7971fd9fcf4f",
+        "android_client_info": {
+          "package_name": "org.perso.bikerbox"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAy-MbdsFTEwGCDa6NV1DHdZuV51a_zlm4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
