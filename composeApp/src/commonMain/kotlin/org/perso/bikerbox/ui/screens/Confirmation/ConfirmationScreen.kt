@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -157,7 +158,7 @@ fun ConfirmationScreenContent(
                         style = MaterialTheme.typography.titleLarge
                     )
 
-                    Divider()
+                    HorizontalDivider()
 
                     if (isPreConfirmation) {
                         DetailRow(label = "Casier", value = lockerName ?: "")

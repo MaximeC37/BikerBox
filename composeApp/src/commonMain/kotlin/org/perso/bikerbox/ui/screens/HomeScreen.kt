@@ -3,24 +3,15 @@ package org.perso.bikerbox.ui.screens
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,8 +26,6 @@ import org.perso.bikerbox.data.models.Resource
 import org.perso.bikerbox.ui.viewmodel.AuthViewModel
 import org.perso.bikerbox.ui.viewmodel.ReservationState
 import org.perso.bikerbox.ui.viewmodel.ReservationViewModel
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,7 +57,7 @@ fun HomeScreen(
                 actions = {
                     // Utiliser un bloc de contenu au lieu d'une liste directe
                     IconButton(onClick = { onNavigateToReservations() }) {
-                        Icon(Icons.Default.List, contentDescription = "Mes réservations")
+                        Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Mes réservations")
                     }
                     IconButton(onClick = { showMenu = true }) {
                         Icon(Icons.Default.AccountCircle, contentDescription = "Profil")
@@ -103,7 +92,7 @@ fun HomeScreen(
                                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Icon(Icons.Default.ExitToApp, contentDescription = null)
+                                        Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
                                         Text("Déconnexion")
                                     }
                                 }

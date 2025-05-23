@@ -9,15 +9,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toLocalDate
-import kotlinx.datetime.toLocalTime
 import org.perso.bikerbox.data.models.Locker
 import org.perso.bikerbox.data.models.LockerSize
 import org.perso.bikerbox.data.models.Reservation
 import org.perso.bikerbox.data.repository.LockersRepository
 import org.perso.bikerbox.data.services.PricingService
 import java.time.ZoneId
-import java.util.UUID
+import java.util.*
 
 class FirebaseLockersRepository : LockersRepository {
     private val firestore = FirebaseFirestore.getInstance()
@@ -38,7 +36,7 @@ class FirebaseLockersRepository : LockersRepository {
                     Log.d(TAG, "Document ID ${doc.id}: ${doc.data}")
 
                     // Récupération des tailles disponibles
-                    val sizesRaw = doc.get("availableSizes") as? List<String>
+                    val sizesRaw = doc.get("availableSizes") as? List<*>
                     Log.d(TAG, "Tailles disponibles pour ${doc.id}: $sizesRaw")
 
                     if (sizesRaw == null) {
@@ -48,7 +46,7 @@ class FirebaseLockersRepository : LockersRepository {
 
                     val sizes = sizesRaw.mapNotNull { sizeStr ->
                         try {
-                            LockerSize.valueOf(sizeStr)
+                            LockerSize.valueOf(sizeStr as String)
                         } catch (e: Exception) {
                             Log.e(TAG, "Erreur lors de la conversion de la taille $sizeStr: ${e.message}")
                             null
@@ -145,7 +143,7 @@ class FirebaseLockersRepository : LockersRepository {
             val sizes = sizesRaw.mapNotNull { sizeStr ->
                 try {
                     LockerSize.valueOf(sizeStr as String)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     null
                 }
             }
@@ -162,7 +160,7 @@ class FirebaseLockersRepository : LockersRepository {
                         else -> 0
                     }
                     availableCount[size] = count
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     // Ignorer les entrées incorrectes
                 }
             }
@@ -239,7 +237,7 @@ class FirebaseLockersRepository : LockersRepository {
                 try {
                     val size = LockerSize.valueOf(sizeStr)
                     reservedCount[size] = (reservedCount[size] ?: 0) + 1
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     Log.e(TAG, "Taille de casier non reconnue: $sizeStr")
                 }
             }
@@ -284,7 +282,6 @@ class FirebaseLockersRepository : LockersRepository {
 
             // Récupérer le locker pour obtenir le nom
             val locker = getLockerById(lockerId)
-            val lockerName = locker?.name ?: "Casier inconnu"
 
             // Générer un code de réservation aléatoire
             val code = "A${(100..999).random()}"
@@ -364,7 +361,7 @@ class FirebaseLockersRepository : LockersRepository {
                     val sizeStr = doc.getString("size") ?: return@mapNotNull null
                     val size = try {
                         LockerSize.valueOf(sizeStr)
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         Log.e(TAG, "Taille de casier non reconnue: $sizeStr")
                         return@mapNotNull null
                     }
