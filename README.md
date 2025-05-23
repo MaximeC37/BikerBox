@@ -34,8 +34,8 @@ BikerBox est un projet personnel d'application mobile en cours de développement
 ## 🔧 Prérequis Techniques
 
 - Android Studio Hedgehog | 2023.1.1 ou plus récent
-- JDK 21
-- Kotlin 2.1
+- JDK 23
+- Kotlin 2.1.20
 - Android SDK 34
 - Un compte Firebase (pour le développement)
 - Git
@@ -48,15 +48,18 @@ bash git clone [https://github.com/votre-username/BikerBox.git](https://github.c
 
 ### 2. Configuration Firebase
 
-1. Créez un projet sur [Firebase Console](https://console.firebase.google.com/)
-2. Ajoutez une application Android avec:
-  - Package name: `org.perso.bikerbox`
-  - Téléchargez le fichier `google-services.json`
-3. Placez `google-services.json` dans le dossier `composeApp/src/androidMain`
-4. Activez dans Firebase Console:
-  - Authentication (Email/Password)
-  - Firestore Database
-  - Real-time Database
+1. Créez un projet dans la [Console Firebase](https://console.firebase.google.com/)
+2. Ajoutez une application Android avec le package `org.perso.bikerbox`
+3. Téléchargez le fichier `google-services.json`
+4. Placez-le dans le dossier `composeApp/`
+
+Note : Un fichier `google-services.json.example` est fourni dans le dépôt comme exemple de structure. **Ne pas l'utiliser en production.**
+
+Les étapes supplémentaires nécessaires :
+- Activez Authentication (Email/Password)
+- Configurez Firestore Database
+- Configurez Storage si nécessaire
+
 
 ### 3. Configuration du Projet
 
