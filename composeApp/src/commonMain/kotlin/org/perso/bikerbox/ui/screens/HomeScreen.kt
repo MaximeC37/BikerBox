@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import formatToString
 import kotlinx.coroutines.delay
 import org.perso.bikerbox.data.models.Locker
 import org.perso.bikerbox.data.models.Resource
@@ -259,15 +260,13 @@ fun HomeScreen(
 
                             Spacer(modifier = Modifier.height(4.dp))
 
-                            val dateFormatter = remember { SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE) }
-
                             Text(
-                                text = "Du: ${currentState.reservation.startDate.format()}",
+                                text = "Du: ${currentState.reservation.startDate.formatToString()}",
                                 style = MaterialTheme.typography.bodyMedium
                             )
 
                             Text(
-                                text = "Au: ${currentState.reservation.endDate.format()}",
+                                text = "Au: ${currentState.reservation.endDate.formatToString()}",
                                 style = MaterialTheme.typography.bodyMedium
                             )
 
