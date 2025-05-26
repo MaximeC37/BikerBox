@@ -1,7 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -108,13 +106,10 @@ dependencies {
     implementation(libs.androidx.ui.text.android)
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.lifecycle.viewmodel.android)
-    implementation(libs.runtime.android)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.material3.android)
     implementation(libs.androidx.navigation.compose.android)
     implementation(libs.androidx.navigation.runtime.android)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.foundation.android)
     debugImplementation(compose.uiTooling)
 
     // Coil pour le chargement des images

@@ -8,27 +8,15 @@ androidx-activityCompose = "1.10.1"
 androidx-constraintlayout = "2.2.1"
 androidx-lifecycle = "2.8.4"
 compose-multiplatform = "1.7.3"
-coroutines = "1.10.2"
-junit = "4.13.2"
 kotlin = "2.1.21"
-kotlinx-coroutines = "1.10.2"
-kotlinx_serialization_json = "1.8.1"
-kotlinxDatetime = "0.6.2"
-ktor = "3.1.3"
-kotlin = "2.1.20"
 material3Android = "1.3.2"
-foundationLayoutAndroid = "1.8.2"
-uiUtilAndroid = "1.8.0"
 runtimeAndroid = "1.8.0"
 uiTextAndroid = "1.8.0"
 foundationAndroid = "1.8.0"
 lifecycleViewmodelAndroid = "2.8.7"
-runtimeAndroidVersion = "1.8.0"
 navigationCompose = "2.8.9"
-material3AndroidVersion = "1.3.2"
 navigationComposeAndroid = "2.9.0-rc01"
 navigationRuntimeAndroid = "2.9.0-rc01"
-foundationAndroidVersion = "1.8.0"
 
 [libraries]
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
@@ -40,12 +28,9 @@ androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime
 androidx-ui-text-android = { group = "androidx.compose.ui", name = "ui-text-android", version.ref = "uiTextAndroid" }
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroidVersion" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3AndroidVersion" }
 androidx-navigation-compose-android = { group = "androidx.navigation", name = "navigation-compose-android", version.ref = "navigationComposeAndroid" }
 androidx-navigation-runtime-android = { group = "androidx.navigation", name = "navigation-runtime-android", version.ref = "navigationRuntimeAndroid" }
-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroidVersion" }
 
 [bundles]
 
