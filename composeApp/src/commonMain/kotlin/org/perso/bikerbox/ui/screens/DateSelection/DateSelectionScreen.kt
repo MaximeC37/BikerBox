@@ -34,7 +34,7 @@ fun DateSelectionScreen(
         val startDateTime = combineDateTime(selectedStartDate!!, startTime!!)
         val endDateTime = combineDateTime(selectedEndDate!!, endTime!!)
 
-        // Calculer la différence en heures
+        // Calculate the difference in hours
         val price = if (endDateTime <= startDateTime) {
             0.0
         } else {
@@ -50,16 +50,16 @@ fun DateSelectionScreen(
         0.0
     }
 
-    // Afficher le prix calculé
+    // Display calculated price
     if (calculatedPrice > 0) {
         Text(
-            text = "Prix estimé: ${calculatedPrice.round(2)}€",
+            text = "Estimated price: ${calculatedPrice.round(2)}€",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(vertical = 8.dp)
         )
     }
 
-    // Afficher le message d'erreur s'il y en a un
+    // Display error message if there is one
     if (errorMessage.isNotEmpty()) {
         Text(
             text = errorMessage,
@@ -74,12 +74,12 @@ fun DateSelectionScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Sélection date et heure") },
+                title = { Text("Date and Time Selection") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour"
+                            contentDescription = "Back"
                         )
                     }
                 }
@@ -95,55 +95,55 @@ fun DateSelectionScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Text(
-                text = "Locker: $lockerName - Taille: ${selectedSize.name}",
+                text = "Locker: $lockerName - Size: ${selectedSize.name}",
                 style = MaterialTheme.typography.titleMedium
             )
 
-            // Pour la date de début
+            // For start date
             DateSelectionComponent(
-                title = "Date de début",
+                title = "Start Date",
                 selectedDate = selectedStartDate,
                 onDateSelected = { selectedStartDate = it }
             )
 
-            // Pour la date de fin
+            // For end date
             DateSelectionComponent(
-                title = "Date de fin",
+                title = "End Date",
                 selectedDate = selectedEndDate,
                 onDateSelected = { selectedEndDate = it }
             )
 
-            // Heures de début et fin
+            // Start and end times
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 TimeSelectionComponent(
-                    title = "Heure de début",
+                    title = "Start Time",
                     selectedTime = startTime,
                     onTimeSelected = { startTime = it }
                 )
 
                 TimeSelectionComponent(
-                    title = "Heure de fin",
+                    title = "End Time",
                     selectedTime = endTime,
                     onTimeSelected = { endTime = it }
                 )
             }
 
-            // Prix calculé
+            // Calculated price
             Text(
-                text = "Prix estimé: ${calculatedPrice.round(2)}€",
+                text = "Estimated price: ${calculatedPrice.round(2)}€",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 16.dp)
             )
 
-            // Bouton de confirmation
+            // Confirmation button
             Button(
                 onClick = {
                     selectedStartDate?.let { start ->
                         selectedEndDate?.let { end ->
-                            // Conversion de LocalDate en LocalDateTime
+                            // Convert LocalDate to LocalDateTime
                             val startDateTime = LocalDateTime(
                                 start.year,
                                 start.monthNumber,
@@ -170,7 +170,7 @@ fun DateSelectionScreen(
                     .fillMaxWidth(0.7f)
                     .padding(top = 16.dp)
             ) {
-                Text("Confirmer")
+                Text("Confirm")
             }
         }
     }
@@ -204,24 +204,24 @@ fun DateSelectionComponent(
             Text(
                 text = selectedDate?.let {
                     "${it.dayOfMonth}/${it.monthNumber}/${it.year}"
-                } ?: "Choisir une date",
+                } ?: "Choose a date",
                 maxLines = 1
             )
         }
 
         if (showDatePicker) {
-            // Nous pouvons utiliser null pour l'initialisation et laisser DatePicker utiliser la date actuelle
+            // We can use null for initialization and let DatePicker use the current date
             val initialDateMillis = selectedDate?.let {
-                // Obtenir l'horodatage actuel
+                // Get current timestamp
                 val now = Clock.System.now().toEpochMilliseconds()
 
-                // Calculer approximativement la différence en jours
+                // Calculate approximately the difference in days
                 val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
                 val daysDiff = (it.dayOfMonth - today.dayOfMonth) +
                         30 * (it.monthNumber - today.monthNumber) +
                         365 * (it.year - today.year)
 
-                // Ajuster l'horodatage (approximatif, mais suffisant pour l'initialisation)
+                // Adjust timestamp (approximate, but sufficient for initialization)
                 now + (daysDiff * 24 * 60 * 60 * 1000L)
             }
 
@@ -246,7 +246,7 @@ fun DateSelectionComponent(
                 },
                 dismissButton = {
                     Button(onClick = { showDatePicker = false }) {
-                        Text("Annuler")
+                        Text("Cancel")
                     }
                 }
             ) {
@@ -255,6 +255,7 @@ fun DateSelectionComponent(
         }
     }
 }
+
 private fun combineDateTime(date: LocalDate, timeString: String): LocalDateTime {
     try {
         val timeParts = timeString.split(":")
@@ -266,13 +267,14 @@ private fun combineDateTime(date: LocalDate, timeString: String): LocalDateTime 
             hour, minute, 0, 0
         )
     } catch (e: Exception) {
-        // Log l'erreur pour débogage
-        println("Erreur de conversion date/heure: ${e.message}")
-        // Renvoyer une valeur par défaut ou lancer l'exception
+        // Log error for debugging
+        println("Date/time conversion error: ${e.message}")
+        // Return default value or throw exception
         throw e
     }
 }
-// Extension pour arrondir un Double à n décimales
+
+// Extension to round a Double to n decimal places
 private fun Double.round(decimals: Int): String {
     var multiplier = 1.0
     repeat(decimals) { multiplier *= 10 }
@@ -323,7 +325,7 @@ fun TimeSelectionComponent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = selectedTime ?: "Choisir",
+                    text = selectedTime ?: "Choose",
                     maxLines = 1
                 )
             }

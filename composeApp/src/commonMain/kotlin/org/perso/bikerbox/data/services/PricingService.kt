@@ -8,69 +8,69 @@ import kotlin.math.ceil
 
 class PricingService {
     companion object {
-        // Prix de base par jour selon la taille (par tranche de 24h)
+        // Base price per day according to size (per 24h period)
         private const val BASE_PRICE_SINGLE = 6.0
         private const val BASE_PRICE_DOUBLE = 10.0
 
-        // Paliers pour tarifs dégressifs (en jours)
-        private const val TIER_1_DAYS = 3  // Premier palier : 3 jours et plus
-        private const val TIER_2_DAYS = 7  // Second palier : 7 jours et plus
-        private const val TIER_3_DAYS = 30 // Troisième palier : 30 jours et plus (mensuel)
+        // Tiers for progressive pricing (in days)
+        private const val TIER_1_DAYS = 3  // First tier: 3 days and more
+        private const val TIER_2_DAYS = 7  // Second tier: 7 days and more
+        private const val TIER_3_DAYS = 30 // Third tier: 30 days and more (monthly)
 
-        // Réductions (en pourcentage)
-        private const val TIER_1_DISCOUNT = 0.10 // 10% de réduction
-        private const val TIER_2_DISCOUNT = 0.20 // 20% de réduction
-        private const val TIER_3_DISCOUNT = 0.30 // 30% de réduction
-
+        // Discounts (in percentage)
+        private const val TIER_1_DISCOUNT = 0.10 // 10% discount
+        private const val TIER_2_DISCOUNT = 0.20 // 20% discount
+        private const val TIER_3_DISCOUNT = 0.30 // 30% discount
 
         fun calculatePrice(size: LockerSize, startDate: LocalDateTime, endDate: LocalDateTime): Double {
-            // Calcul des heures totales
+            // Calculate total hours
             val totalHours = calculateTotalHoursBetween(startDate, endDate)
 
-            // Si la durée est nulle ou négative, retourner 0
+            // If duration is null or negative, return 0
             if (totalHours <= 0) return 0.0
 
-            // Déterminer le prix de base selon la taille
+            // Determine base price according to size
             val basePrice = when (size) {
                 LockerSize.SINGLE -> BASE_PRICE_SINGLE
                 LockerSize.DOUBLE -> BASE_PRICE_DOUBLE
-                // Autres tailles si nécessaire
+                // Other sizes if needed
             }
 
-            // Calculer le prix pour chaque tranche de 24h entamée
+            // Calculate price for each started 24h period
             val days = ceil(totalHours / 24.0).coerceAtLeast(1.0)
 
-            // Calculer le prix standard
+            // Calculate standard price
             val standardPrice = basePrice * days
 
-            // Appliquer la réduction selon le nombre de jours
+            // Apply discount according to number of days
             val priceWithDiscount = applyDiscount(standardPrice, days.toInt())
 
-            // Arrondir à 2 chiffres après la virgule
+            // Round to 2 decimal places
             return (kotlin.math.round(priceWithDiscount * 100) / 100)
         }
+
         private fun applyDiscount(standardPrice: Double, days: Int): Double {
             val discountRate = when {
-                days >= TIER_3_DAYS -> TIER_3_DISCOUNT // 30% pour 30 jours et plus
-                days >= TIER_2_DAYS -> TIER_2_DISCOUNT // 20% pour 7 jours et plus
-                days >= TIER_1_DAYS -> TIER_1_DISCOUNT // 10% pour 3 jours et plus
-                else -> 0.0                           // Pas de réduction
+                days >= TIER_3_DAYS -> TIER_3_DISCOUNT // 30% for 30 days and more
+                days >= TIER_2_DAYS -> TIER_2_DISCOUNT // 20% for 7 days and more
+                days >= TIER_1_DAYS -> TIER_1_DISCOUNT // 10% for 3 days and more
+                else -> 0.0                           // No discount
             }
 
             return standardPrice * (1.0 - discountRate)
         }
+
         fun calculateTotalHoursBetween(startDate: LocalDateTime, endDate: LocalDateTime): Double {
-            // Convertir en Instant (temps machine) pour un calcul précis
+            // Convert to Instant (machine time) for precise calculation
             val startInstant = startDate.toInstant(TimeZone.currentSystemDefault())
             val endInstant = endDate.toInstant(TimeZone.currentSystemDefault())
 
-            // Calculer la différence en millisecondes
+            // Calculate difference in milliseconds
             val diffInMillis = endInstant.toEpochMilliseconds() - startInstant.toEpochMilliseconds()
 
-            // Convertir en heures (1 heure = 3 600 000 millisecondes)
+            // Convert to hours (1 hour = 3,600,000 milliseconds)
             return diffInMillis / 3_600_000.0
         }
-
     }
 }
 

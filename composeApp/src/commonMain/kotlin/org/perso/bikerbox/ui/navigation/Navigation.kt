@@ -11,6 +11,7 @@ import org.perso.bikerbox.ui.screens.auth.ForgotPasswordScreen
 import org.perso.bikerbox.ui.screens.auth.LoginScreen
 import org.perso.bikerbox.ui.screens.auth.SignUpScreen
 import org.perso.bikerbox.ui.screens.profile.ProfileScreen
+import org.perso.bikerbox.ui.screens.payment.PaymentScreen
 import org.perso.bikerbox.ui.viewmodel.AuthViewModel
 import org.perso.bikerbox.ui.viewmodel.ReservationViewModel
 
@@ -21,6 +22,9 @@ fun Navigation(reservationViewModel: ReservationViewModel, authViewModel: AuthVi
     // État pour stocker les paramètres nécessaires pour certains écrans
     var selectedLockerId by remember { mutableStateOf("") }
     var selectedSize by remember { mutableStateOf<LockerSize?>(null) }
+    // Variables pour le paiement
+    var paymentAmount by remember { mutableStateOf(0.0) }
+    var reservationIdForPayment by remember { mutableStateOf("") }
 
     // Logique de navigation basée sur la route actuelle
     when (val route = navController.currentRoute) {
@@ -102,10 +106,32 @@ fun Navigation(reservationViewModel: ReservationViewModel, authViewModel: AuthVi
             ConfirmationScreen(
                 viewModel = reservationViewModel,
                 onConfirm = {
-                    reservationViewModel.confirmReservation()
-                    navController.navigateAndClearBackStack("home")
+                    // Récupérer les détails de la réservation pour le paiement
+                    val state = reservationViewModel.state.value
+                    if (state is org.perso.bikerbox.ui.viewmodel.ReservationState.ConfirmationNeeded) {
+                        paymentAmount = state.price
+                        reservationIdForPayment = "reservation_${System.currentTimeMillis()}"
+                        navController.navigateTo("payment")
+                    } else if (state is org.perso.bikerbox.ui.viewmodel.ReservationState.Success) {
+                        // Si c'est déjà confirmé, retourner à l'accueil
+                        navController.navigateAndClearBackStack("home")
+                    }
                 },
                 onCancel = { navController.popBackStack() }
+            )
+        }
+
+        "payment" -> {
+            PaymentScreen(
+                reservationId = reservationIdForPayment,
+                amount = paymentAmount,
+                onPaymentSuccess = {
+                    // Après le paiement réussi, confirmer la réservation
+                    reservationViewModel.confirmReservation()
+                    // Retourner à l'écran de confirmation pour voir le code
+                    navController.navigateAndReplace("my_reservations")
+                },
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 

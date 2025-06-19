@@ -26,24 +26,24 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            // Utilisation du repository fourni par LockersProvider avec vérification
+            // Use repository provided by LockersProvider with verification
             val repository = try {
                 LockersProvider.repository
             } catch (e: Exception) {
-                Log.e("App", "Erreur lors de la récupération du repository: ${e.message}")
-                throw IllegalStateException("Repository non initialisé correctement")
+                Log.e("App", "Error retrieving repository: ${e.message}")
+                throw IllegalStateException("Repository not properly initialized")
             }
 
-            // Initialisation du repository d'authentification
+            // Initialize authentication repository
             val authRepository = AuthRepositoryFactory.createRepository()
 
-            // Initialisation des use cases
+            // Initialize use cases
             val getAvailableLockersUseCase = GetAvailableLockersUseCase(repository)
             val makeReservationUseCase = MakeReservationUseCase(repository)
             val getUserReservationsUseCase = GetUserReservationsUseCase(repository)
             val cancelReservationUseCase = CancelReservationUseCase(repository)
 
-            // Initialisation des ViewModels
+            // Initialize ViewModels
             val reservationViewModel = ReservationViewModel(
                 getAvailableLockersUseCase = getAvailableLockersUseCase,
                 makeReservationUseCase = makeReservationUseCase,
@@ -58,5 +58,3 @@ fun App() {
         }
     }
 }
-
-

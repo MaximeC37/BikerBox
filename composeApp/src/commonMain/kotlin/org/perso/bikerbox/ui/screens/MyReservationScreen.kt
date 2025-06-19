@@ -7,8 +7,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -24,17 +28,42 @@ fun MyReservationsScreen(
     onNavigateBack: () -> Unit
 ) {
     val reservationsState by viewModel.userReservations.collectAsState()
+    val uiMessage by viewModel.uiMessage.collectAsState()
+
+    uiMessage?.let { message ->
+        LaunchedEffect(message) {
+            kotlinx.coroutines.delay(3000)
+            viewModel.clearUiMessage()
+        }
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mes réservations") },
+                title = { Text("My Reservations") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
+        },
+        snackbarHost = {
+            uiMessage?.let { message ->
+                SnackbarHost(
+                    hostState = remember { SnackbarHostState() }
+                ) {
+                    Snackbar(
+                        action = {
+                            TextButton(onClick = { viewModel.clearUiMessage() }) {
+                                Text("OK")
+                            }
+                        }
+                    ) {
+                        Text(message)
+                    }
+                }
+            }
         }
     ) { padding ->
         when (val state = reservationsState) {
@@ -48,7 +77,7 @@ fun MyReservationsScreen(
                 ) {
                     CircularProgressIndicator()
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Chargement de vos réservations...")
+                    Text("Loading your reservations...")
                 }
             }
             is Resource.Error -> {
@@ -61,7 +90,7 @@ fun MyReservationsScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Erreur: ${state.message}",
+                        text = "Error: ${state.message}",
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -82,7 +111,7 @@ fun MyReservationsScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "Vous n'avez pas encore de réservations",
+                            text = "You don't have any reservations yet",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -98,7 +127,10 @@ fun MyReservationsScreen(
                             val reservation = reservations[index] as Reservation
                             ReservationCard(
                                 reservation = reservation,
-                                onCancelReservation = { viewModel.cancelReservation(it) }
+                                onCancelReservation = { reservationId ->
+                                    println(" UI: Cancellation requested for: $reservationId")
+                                    viewModel.cancelReservation(reservationId)
+                                }
                             )
                         }
                     }
@@ -113,6 +145,32 @@ fun ReservationCard(
     reservation: Reservation,
     onCancelReservation: (String) -> Unit
 ) {
+    //  NOUVEAU : État pour confirmer la suppression
+    var showConfirmDialog by remember { mutableStateOf(false) }
+
+    if (showConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = { showConfirmDialog = false },
+            title = { Text("Confirm Cancellation") },
+            text = { Text("Are you sure you want to cancel this reservation?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showConfirmDialog = false
+                        onCancelReservation(reservation.id)
+                    }
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -120,22 +178,27 @@ fun ReservationCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            // Informations sur la réservation
+            // Reservation information
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Casier #${reservation.lockerId}",
+                    text = "Locker #${reservation.lockerId}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
 
-                IconButton(onClick = { onCancelReservation(reservation.id) }) {
+                IconButton(
+                    onClick = {
+                        println(" Delete button clicked for: ${reservation.id}")
+                        showConfirmDialog = true
+                    }
+                ) {
                     Icon(
                         Icons.Default.Delete,
-                        contentDescription = "Annuler",
+                        contentDescription = "Cancel",
                         tint = MaterialTheme.colorScheme.error
                     )
                 }
@@ -143,26 +206,24 @@ fun ReservationCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Taille du casier
             Text(
-                text = "Taille: ${reservation.size.name}",
+                text = "Size: ${reservation.size.name}",
                 style = MaterialTheme.typography.bodyMedium
             )
 
             // Dates
             Text(
-                text = "Du: ${formatDateTime(reservation.startDate)}",
+                text = "From: ${formatDateTime(reservation.startDate)}",
                 style = MaterialTheme.typography.bodyMedium
             )
 
             Text(
-                text = "Au: ${formatDateTime(reservation.endDate)}",
+                text = "To: ${formatDateTime(reservation.endDate)}",
                 style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Code et prix
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -174,7 +235,7 @@ fun ReservationCard(
                 )
 
                 Text(
-                    text = "Prix: ${reservation.price.round(2)}€",
+                    text = "Price: ${reservation.price.round(2)}€",
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -182,12 +243,12 @@ fun ReservationCard(
     }
 }
 
-// Extension pour formater les dates
+// Extension to format dates
 private fun formatDateTime(dateTime: kotlinx.datetime.LocalDateTime): String {
     return "${dateTime.dayOfMonth}/${dateTime.monthNumber}/${dateTime.year} - ${dateTime.hour}:${dateTime.minute.toString().padStart(2, '0')}"
 }
 
-// Réutilisation de l'extension pour arrondir le prix
+// Reuse extension to round price
 private fun Double.round(decimals: Int): String {
     var multiplier = 1.0
     repeat(decimals) { multiplier *= 10 }

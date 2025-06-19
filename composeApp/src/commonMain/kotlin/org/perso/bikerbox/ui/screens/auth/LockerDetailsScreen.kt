@@ -26,7 +26,7 @@ fun LockerDetailsScreen(
     onNavigateBack: () -> Unit,
     onSelectSize: (LockerSize) -> Unit
 ) {
-    // Récupérer les casiers depuis le ViewModel
+    // Retrieve Lockers from the ViewModel
     val availableLockers by viewModel.availableLockers.collectAsState()
 
     // Trouver le casier correspondant à l'ID

@@ -3,9 +3,8 @@ package org.perso.bikerbox.utils
 import kotlin.math.pow
 import kotlin.math.roundToLong
 
-/**
- * Formate un nombre décimal avec le nombre spécifié de décimales
- */
+//Formats a decimal number with the specified number of decimal places
+
 fun Double.formatDecimal(decimals: Int = 2): String {
     val factor = 10.0.pow(decimals.toDouble())
     val roundedValue = (this * factor).roundToLong() / factor

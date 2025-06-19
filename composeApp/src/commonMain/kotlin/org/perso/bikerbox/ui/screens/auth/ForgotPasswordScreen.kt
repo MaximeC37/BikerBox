@@ -27,14 +27,14 @@ fun ForgotPasswordScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    // Effet pour gérer les résultats des opérations d'authentification
+    // Effect to manage the results of authentication operations
     LaunchedEffect(authOperation) {
         when (authOperation) {
             is Resource.Success -> {
                 scope.launch {
-                    snackbarHostState.showSnackbar("Email de réinitialisation envoyé. Vérifiez votre boîte de réception.")
+                    snackbarHostState.showSnackbar("Reset email sent. Check your inbox.")
                 }
-                // Réinitialiser l'état après affichage du message
+                // Reset state after displaying message
                 authViewModel.resetOperationState()
             }
             is Resource.Error -> {
@@ -42,20 +42,20 @@ fun ForgotPasswordScreen(
                 scope.launch {
                     snackbarHostState.showSnackbar(errorMessage)
                 }
-                // Réinitialiser l'état après affichage du message d'erreur
+                // Reset state after displaying message
                 authViewModel.resetOperationState()
             }
-            else -> { /* Ne rien faire pour Loading ou null */ }
+            else -> { /* Do nothing for Loading or null */ }
         }
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mot de passe oublié") },
+                title = { Text("Forgotten password") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -71,23 +71,23 @@ fun ForgotPasswordScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Réinitialisation du mot de passe",
+                text = "Password Reset",
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
             Text(
-                text = "Entrez votre adresse email pour recevoir un lien de réinitialisation de mot de passe.",
+                text = "Enter your email address to receive a password reset link.",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // Champ email
+            // Email field
             OutlinedTextField(
                 value = email,
                 onValueChange = {
                     email = it
-                    emailError = null // Effacer l'erreur lorsque l'utilisateur commence à taper
+                    emailError = null
                 },
                 label = { Text("Email") },
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
@@ -98,17 +98,17 @@ fun ForgotPasswordScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Bouton d'envoi
+            // Send button
             Button(
                 onClick = {
-                    // Validation de l'email
+                    // Email validation
                     if (email.isBlank()) {
-                        emailError = "L'email ne peut pas être vide"
+                        emailError = "Email cannot be empty"
                         return@Button
                     }
 
                     if (!isValidEmail(email)) {
-                        emailError = "Format d'email invalide"
+                        emailError = "Invalid email format"
                         return@Button
                     }
                     authViewModel.sendPasswordReset(email)
@@ -123,7 +123,7 @@ fun ForgotPasswordScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Envoyer le lien de réinitialisation")
+                    Text("Send reset link")
                 }
             }
         }
