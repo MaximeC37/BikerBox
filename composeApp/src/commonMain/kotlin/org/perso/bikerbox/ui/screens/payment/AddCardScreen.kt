@@ -51,7 +51,7 @@ fun AddCardScreen(
             OutlinedTextField(
                 value = cardNumber,
                 onValueChange = { value ->
-                    if (value.length <= 19) { // 16 chiffres + 3 tirets
+                    if (value.length <= 19) {
                         cardNumber = formatCardNumber(value)
                     }
                 },

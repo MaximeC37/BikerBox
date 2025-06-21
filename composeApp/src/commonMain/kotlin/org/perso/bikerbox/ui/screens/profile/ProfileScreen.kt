@@ -34,7 +34,6 @@ fun ProfileScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    // Mettre à jour les champs si l'utilisateur change
     LaunchedEffect(currentUser) {
         currentUser?.let {
             displayName = it.displayName ?: ""
@@ -42,12 +41,11 @@ fun ProfileScreen(
         }
     }
 
-    // Gérer les résultats des opérations
     LaunchedEffect(authOperation) {
         when (authOperation) {
             is Resource.Success -> {
                 scope.launch {
-                    snackbarHostState.showSnackbar("Profil mis à jour avec succès")
+                    snackbarHostState.showSnackbar("Profile successfully updated")
                 }
                 isEditing = false
                 authViewModel.resetOperationState()
@@ -59,22 +57,22 @@ fun ProfileScreen(
                 }
                 authViewModel.resetOperationState()
             }
-            else -> { /* Ne rien faire pour Loading ou null */ }
+            else -> { /* Do nothing for Loading or null */ }
         }
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mon Profil") },
+                title = { Text("My Profil") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
                     IconButton(onClick = { isEditing = !isEditing }) {
-                        Icon(Icons.Default.Edit, contentDescription = "Modifier")
+                        Icon(Icons.Default.Edit, contentDescription = "Edit")
                     }
                 }
             )
@@ -89,10 +87,9 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Photo de profil (avec placehoder si aucune photo n'est disponible)
             Icon(
                 Icons.Default.AccountCircle,
-                contentDescription = "Photo de profil",
+                contentDescription = "Profile picture",
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape),
@@ -101,7 +98,6 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Affichage de l'email (non modifiable)
             Text(
                 text = "Email",
                 style = MaterialTheme.typography.titleSmall,
@@ -117,24 +113,23 @@ fun ProfileScreen(
                     .padding(bottom = 16.dp)
             )
 
-            // Nom d'affichage
             if (isEditing) {
                 OutlinedTextField(
                     value = displayName,
                     onValueChange = { displayName = it },
-                    label = { Text("Nom d'affichage") },
+                    label = { Text("Display name") },
                     modifier = Modifier.fillMaxWidth()
                 )
             } else {
                 Text(
-                    text = "Nom d'affichage",
+                    text = "Display name",
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 4.dp)
                 )
                 Text(
-                    text = displayName.ifEmpty { "Non défini" },
+                    text = displayName.ifEmpty { "Undefined" },
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -144,24 +139,23 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Numéro de téléphone
             if (isEditing) {
                 OutlinedTextField(
                     value = phoneNumber,
                     onValueChange = { phoneNumber = it },
-                    label = { Text("Numéro de téléphone") },
+                    label = { Text("Phone number") },
                     modifier = Modifier.fillMaxWidth()
                 )
             } else {
                 Text(
-                    text = "Numéro de téléphone",
+                    text = "Phone number",
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 4.dp)
                 )
                 Text(
-                    text = phoneNumber.ifEmpty { "Non défini" },
+                    text = phoneNumber.ifEmpty { "Undefined" },
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -171,7 +165,6 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Bouton de sauvegarde (visible uniquement en mode édition)
             if (isEditing) {
                 Button(
                     onClick = {

@@ -26,16 +26,12 @@ fun LockerDetailsScreen(
     onNavigateBack: () -> Unit,
     onSelectSize: (LockerSize) -> Unit
 ) {
-    // Retrieve Lockers from the ViewModel
     val availableLockers by viewModel.availableLockers.collectAsState()
 
-    // Trouver le casier correspondant à l'ID
     val locker = availableLockers.find { it.id == lockerId }
 
-    // Effet pour gérer le cas où le casier n'est pas trouvé
     LaunchedEffect(locker) {
         if (locker == null) {
-            // Si le casier n'est pas trouvé, revenir en arrière
             onNavigateBack()
         }
     }
@@ -43,7 +39,7 @@ fun LockerDetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(locker?.name ?: "Détails du casier") },
+                title = { Text(locker?.name ?: "Locker Details") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
@@ -61,7 +57,6 @@ fun LockerDetailsScreen(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Top
             ) {
-                // Informations sur le casier
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -86,7 +81,7 @@ fun LockerDetailsScreen(
                         ) {
                             Icon(
                                 Icons.Default.LocationOn,
-                                contentDescription = "Emplacement",
+                                contentDescription = "Location",
                                 tint = MaterialTheme.colorScheme.primary
                             )
 
@@ -100,14 +95,12 @@ fun LockerDetailsScreen(
                     }
                 }
 
-                // Section des tailles disponibles
                 Text(
-                    text = "Sélectionnez une taille de casier",
+                    text = "Select a locker size",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
 
-                // Liste des tailles disponibles
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -126,7 +119,6 @@ fun LockerDetailsScreen(
                 }
             }
         } ?: run {
-            // Affichage d'erreur si le casier n'est pas trouvé
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -136,14 +128,14 @@ fun LockerDetailsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Casier non trouvé",
+                    text = "Locker not found",
                     style = MaterialTheme.typography.headlineMedium
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(onClick = onNavigateBack) {
-                    Text("Retour")
+                    Text("Back")
                 }
             }
         }
@@ -168,8 +160,8 @@ private fun SizeCard(
         ) {
             Text(
                 text = when (size) {
-                    LockerSize.SINGLE -> "Petit (1 casque + 1 manteau)"
-                    LockerSize.DOUBLE -> "Grand (2 casques + 2 manteaux)"
+                    LockerSize.SINGLE -> "Small (1 helmet + 1 coat)"
+                    LockerSize.DOUBLE -> "Large (2 helmets + 2 coats)"
                 },
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
@@ -192,8 +184,8 @@ private fun SizeCard(
             Text(
                 text = "Prix: ${
                     when (size) {
-                        LockerSize.SINGLE -> "6€/journée"
-                        LockerSize.DOUBLE -> "10€/journée"
+                        LockerSize.SINGLE -> "6€/day"
+                        LockerSize.DOUBLE -> "10€/day"
                     }
                 }",
                 style = MaterialTheme.typography.bodyMedium
@@ -202,7 +194,7 @@ private fun SizeCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "$availableCount disponible${if (availableCount > 1) "s" else ""}",
+                text = "$availableCount available${if (availableCount > 1) "s" else ""}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary
             )

@@ -39,13 +39,13 @@ fun HomeScreen(
 ) {
     val authState by authViewModel.authState.collectAsState()
     val currentUser = if (authState is Resource.Success) (authState as Resource.Success).data else null
-    val state by viewModel.state.collectAsState() // Correction ici - utilisation de "state" au lieu de "reservationState"
+    val state by viewModel.state.collectAsState()
     val availableLockers by viewModel.availableLockers.collectAsState()
 
-    android.util.Log.d("HomeScreen", "État actuel: $state")
-    android.util.Log.d("HomeScreen", "Nombre de casiers dans availableLockers: ${availableLockers.size}")
+    android.util.Log.d("HomeScreen", "Current status: $state")
+    android.util.Log.d("HomeScreen", "Number of lockers in availableLockers: ${availableLockers.size}")
     availableLockers.forEachIndexed { index, locker ->
-        android.util.Log.d("HomeScreen", "Casier $index dans availableLockers: ${locker.name}, ${locker.availableSizes}")
+        android.util.Log.d("HomeScreen", "Locker $index in availableLockers: ${locker.name}, ${locker.availableSizes}")
     }
 
     var showMenu by remember { mutableStateOf(false) }
@@ -55,9 +55,8 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text("BikerBox") },
                 actions = {
-                    // Utiliser un bloc de contenu au lieu d'une liste directe
                     IconButton(onClick = { onNavigateToReservations() }) {
-                        Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Mes réservations")
+                        Icon(Icons.AutoMirrored.Filled.List, contentDescription = "My réservations")
                     }
                     IconButton(onClick = { showMenu = true }) {
                         Icon(Icons.Default.AccountCircle, contentDescription = "Profil")
@@ -79,7 +78,7 @@ fun HomeScreen(
                                     showMenu = false
                                     onNavigateToProfile()
                                 },
-                                text = { Text("Mon profil") }
+                                text = { Text("My profil") }
                             )
 
                             DropdownMenuItem(
@@ -93,7 +92,7 @@ fun HomeScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
-                                        Text("Déconnexion")
+                                        Text("Log out")
                                     }
                                 }
                             )
@@ -120,12 +119,11 @@ fun HomeScreen(
                         ) {
                             CircularProgressIndicator()
                             Spacer(modifier = Modifier.height(16.dp))
-                            Text("Chargement en cours...")
+                            Text("Loading...")
 
-                            // Bouton de rafraîchissement qui apparaît après 10 secondes
                             var showRefreshButton by remember { mutableStateOf(false) }
                             LaunchedEffect(Unit) {
-                                delay(10000) // 10 secondes
+                                delay(10000)
                                 showRefreshButton = true
                             }
 
@@ -137,16 +135,16 @@ fun HomeScreen(
                                 Column {
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Text(
-                                        "Chargement plus long que prévu?",
+                                        "Loading longer than expected?",
                                         style = MaterialTheme.typography.bodySmall
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Button(onClick = { viewModel.loadUserReservations() }) {
-                                        Text("Rafraîchir")
+                                        Text("Refresh")
                                     }
                                     Spacer(modifier = Modifier.height(8.dp))
                                     OutlinedButton(onClick = { viewModel.reset() }) {
-                                        Text("Revenir à l'accueil")
+                                        Text("Return to home page")
                                     }
                                 }
                             }
@@ -155,22 +153,21 @@ fun HomeScreen(
                 }
 
                 is ReservationState.Error -> {
-                    android.util.Log.d("HomeScreen", "Affichage de l'erreur: ${currentState.message}")
+                    android.util.Log.d("HomeScreen", "Error display: ${currentState.message}")
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("Erreur: ${currentState.message}")
+                        Text("Error: ${currentState.message}")
                     }
                 }
 
                 is ReservationState.LockerSelection -> {
-                    android.util.Log.d("HomeScreen", "État LockerSelection avec ${currentState.lockers.size} casiers")
+                    android.util.Log.d("HomeScreen", "State LockerSelection with ${currentState.lockers.size} casiers")
                     currentState.lockers.forEachIndexed { index, locker ->
-                        android.util.Log.d("HomeScreen", "Casier $index dans l'état: ${locker.name}, tailles: ${locker.availableSizes}")
+                        android.util.Log.d("HomeScreen", "Locker $index in the State: ${locker.name}, size: ${locker.availableSizes}")
                     }
 
-                    // Utilisez les casiers de l'état au lieu de availableLockers
                     if (currentState.lockers.isNotEmpty()) {
                         Column(
                             modifier = Modifier
@@ -178,7 +175,7 @@ fun HomeScreen(
                                 .padding(16.dp)
                         ) {
                             Text(
-                                text = "Casiers disponibles",
+                                text = "Lockers available",
                                 style = MaterialTheme.typography.headlineMedium,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(bottom = 16.dp)
@@ -191,12 +188,12 @@ fun HomeScreen(
                             ) {
                                 items(currentState.lockers) { locker ->
                                     // Log avant de créer la carte
-                                    android.util.Log.d("HomeScreen", "Création de LockerCard pour: ${locker.name}")
+                                    android.util.Log.d("HomeScreen", "Creation of LockerCard for: ${locker.name}")
 
                                     LockerCard(
                                         locker = locker,
                                         onClick = {
-                                            android.util.Log.d("HomeScreen", "Casier sélectionné: ${locker.name}")
+                                            android.util.Log.d("HomeScreen", "Locker selected: ${locker.name}")
                                             viewModel.selectLocker(locker)
                                             onSelectLocker(locker.id)
                                         }
@@ -209,12 +206,11 @@ fun HomeScreen(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Aucun casier disponible actuellement.")
+                            Text("No lockers currently available.")
                         }
                     }
                 }
                 is ReservationState.Success -> {
-                    // AJOUT: Code pour gérer l'état Success
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -234,7 +230,7 @@ fun HomeScreen(
                             Spacer(modifier = Modifier.height(16.dp))
 
                             Text(
-                                text = "Réservation confirmée !",
+                                text = "Reservation confirmed!",
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold
                             )
@@ -242,7 +238,7 @@ fun HomeScreen(
                             Spacer(modifier = Modifier.height(8.dp))
 
                             Text(
-                                text = "Votre casier ${currentState.reservation.lockerName} est réservé",
+                                text = "Your locker ${currentState.reservation.lockerName} is reserved",
                                 style = MaterialTheme.typography.bodyLarge,
                                 textAlign = TextAlign.Center
                             )
@@ -272,7 +268,7 @@ fun HomeScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = "Code d'accès",
+                                        text = "Access code",
                                         style = MaterialTheme.typography.labelMedium
                                     )
                                     Text(
@@ -289,7 +285,7 @@ fun HomeScreen(
                                 onClick = { onNavigateToReservations() },
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text("Voir mes réservations")
+                                Text("View my reservations")
                             }
 
                             Spacer(modifier = Modifier.height(8.dp))
@@ -298,14 +294,12 @@ fun HomeScreen(
                                 onClick = { viewModel.reset() },
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text("Retour à l'accueil")
+                                Text("Back to home")
                             }
                         }
                     }
                 }
                 else -> {
-                    // Pour les autres états (SizeSelection, DateSelection, etc.)
-                    // ils sont gérés dans d'autres écrans
                     if (availableLockers.isNotEmpty()) {
                         Column(
                             modifier = Modifier
@@ -313,7 +307,7 @@ fun HomeScreen(
                                 .padding(16.dp)
                         ) {
                             Text(
-                                text = "Casiers disponibles",
+                                text = "Lockers available",
                                 style = MaterialTheme.typography.headlineMedium,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(bottom = 16.dp)
@@ -340,7 +334,7 @@ fun HomeScreen(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Aucun casier disponible actuellement.")
+                            Text("No lockers currently available.")
                         }
                     }
                 }

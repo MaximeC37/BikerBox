@@ -22,7 +22,6 @@ fun PaymentScreen(
 
     when (val currentState = state) {
         is PaymentState.Idle -> {
-            // État initial
         }
 
         is PaymentState.Loading -> {

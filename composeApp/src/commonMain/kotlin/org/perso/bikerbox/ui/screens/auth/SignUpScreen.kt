@@ -69,7 +69,7 @@ fun SignUpScreen(
                 }
                 authViewModel.resetOperationState()
             }
-            else -> { /* Ne rien faire pour Loading ou null */ }
+            else -> { /* Do nothing for Loading or null */ }
         }
     }
 
@@ -86,7 +86,7 @@ fun SignUpScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Créer un compte",
+                text = "Create an account",
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 32.dp, top = 32.dp)
             )
@@ -100,7 +100,7 @@ fun SignUpScreen(
                 label = { Text("Email") },
                 isError = !isEmailValid,
                 supportingText = {
-                    if (!isEmailValid) Text("Email invalide")
+                    if (!isEmailValid) Text("Invalid email")
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -118,10 +118,10 @@ fun SignUpScreen(
                     isPasswordValid = it.length >= 6
                     doPasswordsMatch = it == confirmPassword
                 },
-                label = { Text("Mot de passe") },
+                label = { Text("Password") },
                 isError = !isPasswordValid,
                 supportingText = {
-                    if (!isPasswordValid) Text("Minimum 6 caractères")
+                    if (!isPasswordValid) Text("6 characters min")
                 },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
@@ -139,10 +139,10 @@ fun SignUpScreen(
                     confirmPassword = it
                     doPasswordsMatch = password == it
                 },
-                label = { Text("Confirmer le mot de passe") },
+                label = { Text("Confirm password") },
                 isError = !doPasswordsMatch,
                 supportingText = {
-                    if (!doPasswordsMatch) Text("Les mots de passe ne correspondent pas")
+                    if (!doPasswordsMatch) Text("Passwords do not match")
                 },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
@@ -170,7 +170,7 @@ fun SignUpScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("S'inscrire")
+                    Text("Register")
                 }
             }
 
@@ -179,7 +179,7 @@ fun SignUpScreen(
             TextButton(
                 onClick = onNavigateToLogin
             ) {
-                Text("Déjà un compte? Se connecter")
+                Text("Already have an account? Log in")
             }
 
             Spacer(modifier = Modifier.height(32.dp))

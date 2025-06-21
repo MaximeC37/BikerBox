@@ -53,14 +53,12 @@ fun LoginScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    // Si l'utilisateur est déjà connecté, aller directement à l'écran principal
     LaunchedEffect(authState) {
         if (authState is Resource.Success && (authState as Resource.Success).data != null) {
             onNavigateToMain()
         }
     }
 
-    // Gérer les résultats des opérations d'authentification
     LaunchedEffect(authOperation) {
         when (authOperation) {
             is Resource.Success -> {
@@ -74,7 +72,7 @@ fun LoginScreen(
                 }
                 authViewModel.resetOperationState()
             }
-            else -> { /* Ne rien faire pour Loading ou null */ }
+            else -> { /* Do nothing for Loading or null */ }
         }
     }
 
@@ -104,7 +102,7 @@ fun LoginScreen(
                 label = { Text("Email") },
                 isError = !isEmailValid,
                 supportingText = {
-                    if (!isEmailValid) Text("Email invalide")
+                    if (!isEmailValid) Text("Invalid email")
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -121,10 +119,10 @@ fun LoginScreen(
                     password = it
                     isPasswordValid = it.length >= 6
                 },
-                label = { Text("Mot de passe") },
+                label = { Text("Password") },
                 isError = !isPasswordValid,
                 supportingText = {
-                    if (!isPasswordValid) Text("Minimum 6 caractères")
+                    if (!isPasswordValid) Text("6 characters min")
                 },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
@@ -140,7 +138,7 @@ fun LoginScreen(
                 onClick = onNavigateToForgotPassword,
                 modifier = Modifier.align(Alignment.End)
             ) {
-                Text("Mot de passe oublié?")
+                Text("Forgot your password?")
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -159,7 +157,7 @@ fun LoginScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("Se connecter")
+                    Text("Log in")
                 }
             }
 
@@ -168,7 +166,7 @@ fun LoginScreen(
             TextButton(
                 onClick = onNavigateToSignUp
             ) {
-                Text("Nouveau utilisateur? Créer un compte")
+                Text("New user? Create an account")
             }
         }
     }
