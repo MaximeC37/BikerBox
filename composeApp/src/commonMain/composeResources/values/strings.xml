@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <string name="Date_and_Time_Selection">Date and Time Selection</string>
+    <string name="Back">Back</string>
+    <string name="Start_Date">Start Date</string>
+    <string name="End_Date">End Date</string>
+    <string name="Start_Time">Start Time</string>
+    <string name="End_Time">End Time</string>
+    <string name="Confirm">Confirm</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Choose_a_date">Choose a date</string>
+    <string name="OK">OK</string>
+    <string name="Choose">Choose</string>
+</resources>

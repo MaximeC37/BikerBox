@@ -9,7 +9,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.Back
+import bikerbox.composeapp.generated.resources.Cancel
+import bikerbox.composeapp.generated.resources.Choose
+import bikerbox.composeapp.generated.resources.Choose_a_date
+import bikerbox.composeapp.generated.resources.Date_and_Time_Selection
+import bikerbox.composeapp.generated.resources.End_Date
+import bikerbox.composeapp.generated.resources.End_Time
+import bikerbox.composeapp.generated.resources.OK
+import bikerbox.composeapp.generated.resources.Res
+import bikerbox.composeapp.generated.resources.Start_Date
+import bikerbox.composeapp.generated.resources.Start_Time
 import kotlinx.datetime.*
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.LockerSize
 import org.perso.bikerbox.data.models.basePricePerDay
 import org.perso.bikerbox.data.services.PricingService
@@ -34,7 +46,6 @@ fun DateSelectionScreen(
         val startDateTime = combineDateTime(selectedStartDate!!, startTime!!)
         val endDateTime = combineDateTime(selectedEndDate!!, endTime!!)
 
-        // Calculate the difference in hours
         val price = if (endDateTime <= startDateTime) {
             0.0
         } else {
@@ -50,7 +61,6 @@ fun DateSelectionScreen(
         0.0
     }
 
-    // Display calculated price
     if (calculatedPrice > 0) {
         Text(
             text = "Estimated price: ${calculatedPrice.round(2)}€",
@@ -59,7 +69,6 @@ fun DateSelectionScreen(
         )
     }
 
-    // Display error message if there is one
     if (errorMessage.isNotEmpty()) {
         Text(
             text = errorMessage,
@@ -74,12 +83,12 @@ fun DateSelectionScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Date and Time Selection") },
+                title = { Text(stringResource(Res.string.Date_and_Time_Selection)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(Res.string.Back)
                         )
                     }
                 }
@@ -101,14 +110,14 @@ fun DateSelectionScreen(
 
             // For start date
             DateSelectionComponent(
-                title = "Start Date",
+                title = stringResource(Res.string.Start_Date),
                 selectedDate = selectedStartDate,
                 onDateSelected = { selectedStartDate = it }
             )
 
             // For end date
             DateSelectionComponent(
-                title = "End Date",
+                title = stringResource(Res.string.End_Date),
                 selectedDate = selectedEndDate,
                 onDateSelected = { selectedEndDate = it }
             )
@@ -119,13 +128,13 @@ fun DateSelectionScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 TimeSelectionComponent(
-                    title = "Start Time",
+                    title = stringResource(Res.string.Start_Time),
                     selectedTime = startTime,
                     onTimeSelected = { startTime = it }
                 )
 
                 TimeSelectionComponent(
-                    title = "End Time",
+                    title = stringResource(Res.string.End_Time),
                     selectedTime = endTime,
                     onTimeSelected = { endTime = it }
                 )
@@ -170,7 +179,7 @@ fun DateSelectionScreen(
                     .fillMaxWidth(0.7f)
                     .padding(top = 16.dp)
             ) {
-                Text("Confirm")
+                Text(stringResource(Res.string.OK))
             }
         }
     }
@@ -204,7 +213,7 @@ fun DateSelectionComponent(
             Text(
                 text = selectedDate?.let {
                     "${it.dayOfMonth}/${it.monthNumber}/${it.year}"
-                } ?: "Choose a date",
+                } ?: stringResource(Res.string.Choose_a_date),
                 maxLines = 1
             )
         }
@@ -241,12 +250,12 @@ fun DateSelectionComponent(
                         }
                         showDatePicker = false
                     }) {
-                        Text("OK")
+                        Text(stringResource(Res.string.OK))
                     }
                 },
                 dismissButton = {
                     Button(onClick = { showDatePicker = false }) {
-                        Text("Cancel")
+                        Text(stringResource(Res.string.Cancel))
                     }
                 }
             ) {
@@ -325,7 +334,7 @@ fun TimeSelectionComponent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = selectedTime ?: "Choose",
+                    text = selectedTime ?: stringResource(Res.string.Choose),
                     maxLines = 1
                 )
             }
