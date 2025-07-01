@@ -15,6 +15,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.Available
+import bikerbox.composeapp.generated.resources.Back
+import bikerbox.composeapp.generated.resources.Locker_Details
+import bikerbox.composeapp.generated.resources.Locker_not_found
+import bikerbox.composeapp.generated.resources.Medium
+import bikerbox.composeapp.generated.resources.Price
+import bikerbox.composeapp.generated.resources.Price_medium
+import bikerbox.composeapp.generated.resources.Price_small
+import bikerbox.composeapp.generated.resources.Res
+import bikerbox.composeapp.generated.resources.Select_locker_size
+import bikerbox.composeapp.generated.resources.Size
+import bikerbox.composeapp.generated.resources.Size_locker_double
+import bikerbox.composeapp.generated.resources.Size_locker_single
+import bikerbox.composeapp.generated.resources.Small
+import bikerbox.composeapp.generated.resources.double_helmet_and_double_coat
+import bikerbox.composeapp.generated.resources.one_helmet_and_one_coat
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.LockerSize
 import org.perso.bikerbox.ui.viewmodel.ReservationViewModel
 
@@ -39,7 +56,7 @@ fun LockerDetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(locker?.name ?: "Locker Details") },
+                title = { Text(locker?.name ?: stringResource(Res.string.Locker_Details)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
@@ -96,7 +113,7 @@ fun LockerDetailsScreen(
                 }
 
                 Text(
-                    text = "Select a locker size",
+                    text = stringResource(Res.string.Select_locker_size),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
@@ -128,14 +145,14 @@ fun LockerDetailsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Locker not found",
+                    text = stringResource(Res.string.Locker_not_found),
                     style = MaterialTheme.typography.headlineMedium
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(onClick = onNavigateBack) {
-                    Text("Back")
+                    Text(stringResource(Res.string.Back))
                 }
             }
         }
@@ -160,8 +177,8 @@ private fun SizeCard(
         ) {
             Text(
                 text = when (size) {
-                    LockerSize.SINGLE -> "Small (1 helmet + 1 coat)"
-                    LockerSize.DOUBLE -> "Large (2 helmets + 2 coats)"
+                    LockerSize.SINGLE -> "${stringResource(Res.string.Small)}${stringResource(Res.string.one_helmet_and_one_coat)}"
+                    LockerSize.DOUBLE -> "${stringResource(Res.string.Medium)}${stringResource(Res.string.double_helmet_and_double_coat)}"
                 },
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
@@ -170,10 +187,10 @@ private fun SizeCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Dimensions: ${
+                text = "${stringResource(Res.string.Size)}: ${
                     when (size) {
-                        LockerSize.SINGLE -> "50cm x 50cm x 80cm"
-                        LockerSize.DOUBLE -> "100cm x 100cm x 80cm"
+                        LockerSize.SINGLE -> stringResource(Res.string.Size_locker_single)
+                        LockerSize.DOUBLE -> stringResource(Res.string.Size_locker_double)
                     }
                 }",
                 style = MaterialTheme.typography.bodyMedium
@@ -182,10 +199,10 @@ private fun SizeCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Prix: ${
+                text = "${stringResource(Res.string.Price)}: ${
                     when (size) {
-                        LockerSize.SINGLE -> "6€/day"
-                        LockerSize.DOUBLE -> "10€/day"
+                        LockerSize.SINGLE -> stringResource(Res.string.Price_small)
+                        LockerSize.DOUBLE -> stringResource(Res.string.Price_medium)
                     }
                 }",
                 style = MaterialTheme.typography.bodyMedium
@@ -194,7 +211,7 @@ private fun SizeCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "$availableCount available${if (availableCount > 1) "s" else ""}",
+                text = "$availableCount ${stringResource(Res.string.Available).lowercase()}${if (availableCount > 1) "s" else ""}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary
             )

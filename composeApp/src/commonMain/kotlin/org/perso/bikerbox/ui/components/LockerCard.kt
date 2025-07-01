@@ -9,6 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.Available
+import bikerbox.composeapp.generated.resources.Locker
+import bikerbox.composeapp.generated.resources.Res
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.Locker
 
 @Composable
@@ -47,7 +51,7 @@ fun LockerCard(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "Disponible: ${locker.availableCount.values.sum()} casiers",
+                    text = "${stringResource(Res.string.Available)}: ${locker.availableCount.values.sum()} ${stringResource(Res.string.Locker).lowercase()}",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

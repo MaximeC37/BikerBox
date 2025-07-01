@@ -9,6 +9,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.Available
+import bikerbox.composeapp.generated.resources.Double_locker
+import bikerbox.composeapp.generated.resources.Individual_locker
+import bikerbox.composeapp.generated.resources.None_available
+import bikerbox.composeapp.generated.resources.Res
+import bikerbox.composeapp.generated.resources.double_helmet_and_double_coat
+import bikerbox.composeapp.generated.resources.one_helmet_and_one_coat
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.LockerSize
 
 @Composable
@@ -40,8 +48,8 @@ fun SizeOption(
         ) {
             Text(
                 text = when(size) {
-                    LockerSize.SINGLE -> "Casier individuel (1 personne)"
-                    LockerSize.DOUBLE -> "Casier double (2 personnes)"
+                    LockerSize.SINGLE -> stringResource(Res.string.Individual_locker)
+                    LockerSize.DOUBLE -> stringResource(Res.string.Double_locker)
                 },
                 style = MaterialTheme.typography.titleLarge
             )
@@ -50,8 +58,8 @@ fun SizeOption(
 
             Text(
                 text = when(size) {
-                    LockerSize.SINGLE -> "1 casque + 1 manteau"
-                    LockerSize.DOUBLE -> "2 casques + 2 manteaux"
+                    LockerSize.SINGLE -> stringResource(Res.string.one_helmet_and_one_coat)
+                    LockerSize.DOUBLE -> stringResource(Res.string.double_helmet_and_double_coat)
                 },
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -60,9 +68,9 @@ fun SizeOption(
 
             Text(
                 text = if (isEnabled)
-                    "Disponible: $availableCount"
+                    "${stringResource(Res.string.Available)}: $availableCount"
                 else
-                    "Aucun disponible",
+                    stringResource(Res.string.None_available),
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (isEnabled)
                     MaterialTheme.colorScheme.primary

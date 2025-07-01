@@ -27,11 +27,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.Email
+import bikerbox.composeapp.generated.resources.Forgot_your_password
+import bikerbox.composeapp.generated.resources.Invalid_email
+import bikerbox.composeapp.generated.resources.Log_in
+import bikerbox.composeapp.generated.resources.New_user_create_account
+import bikerbox.composeapp.generated.resources.Password
+import bikerbox.composeapp.generated.resources.Res
+import bikerbox.composeapp.generated.resources._6_characters_min
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.Resource
 import org.perso.bikerbox.ui.viewmodel.AuthViewModel
 
@@ -99,10 +109,10 @@ fun LoginScreen(
                     email = it
                     isEmailValid = it.isEmpty() || isValidEmail(it)
                 },
-                label = { Text("Email") },
+                label = { Text(stringResource(Res.string.Email)) },
                 isError = !isEmailValid,
                 supportingText = {
-                    if (!isEmailValid) Text("Invalid email")
+                    if (!isEmailValid) Text(stringResource(Res.string.Invalid_email))
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -119,10 +129,10 @@ fun LoginScreen(
                     password = it
                     isPasswordValid = it.length >= 6
                 },
-                label = { Text("Password") },
+                label = { Text(stringResource(Res.string.Password)) },
                 isError = !isPasswordValid,
                 supportingText = {
-                    if (!isPasswordValid) Text("6 characters min")
+                    if (!isPasswordValid) Text(stringResource(Res.string._6_characters_min))
                 },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
@@ -138,7 +148,7 @@ fun LoginScreen(
                 onClick = onNavigateToForgotPassword,
                 modifier = Modifier.align(Alignment.End)
             ) {
-                Text("Forgot your password?")
+                Text(stringResource(Res.string.Forgot_your_password))
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -157,7 +167,7 @@ fun LoginScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("Log in")
+                    Text(stringResource(Res.string.Log_in))
                 }
             }
 
@@ -166,7 +176,7 @@ fun LoginScreen(
             TextButton(
                 onClick = onNavigateToSignUp
             ) {
-                Text("New user? Create an account")
+                Text(stringResource(Res.string.New_user_create_account))
             }
         }
     }
