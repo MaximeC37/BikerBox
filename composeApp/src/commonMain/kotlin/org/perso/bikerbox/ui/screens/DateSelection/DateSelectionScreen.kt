@@ -25,6 +25,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.LockerSize
 import org.perso.bikerbox.data.models.basePricePerDay
 import org.perso.bikerbox.data.services.PricingService
+import kotlin.math.round
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -287,7 +288,7 @@ private fun combineDateTime(date: LocalDate, timeString: String): LocalDateTime 
 private fun Double.round(decimals: Int): String {
     var multiplier = 1.0
     repeat(decimals) { multiplier *= 10 }
-    val roundedValue = kotlin.math.round(this * multiplier) / multiplier
+    val roundedValue = round(this * multiplier) / multiplier
 
     return if (decimals > 0) {
         val result = roundedValue.toString()
