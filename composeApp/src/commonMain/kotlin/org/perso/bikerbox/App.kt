@@ -1,7 +1,6 @@
 package org.perso.bikerbox
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,24 +25,19 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            // Use repository provided by LockersProvider with verification
             val repository = try {
                 LockersProvider.repository
-            } catch (e: Exception) {
-                Log.e("App", "Error retrieving repository: ${e.message}")
+            } catch (_: Exception) {
                 throw IllegalStateException("Repository not properly initialized")
             }
 
-            // Initialize authentication repository
             val authRepository = AuthRepositoryFactory.createRepository()
 
-            // Initialize use cases
             val getAvailableLockersUseCase = GetAvailableLockersUseCase(repository)
             val makeReservationUseCase = MakeReservationUseCase(repository)
             val getUserReservationsUseCase = GetUserReservationsUseCase(repository)
             val cancelReservationUseCase = CancelReservationUseCase(repository)
 
-            // Initialize ViewModels
             val reservationViewModel = ReservationViewModel(
                 getAvailableLockersUseCase = getAvailableLockersUseCase,
                 makeReservationUseCase = makeReservationUseCase,
@@ -53,7 +47,6 @@ fun App() {
 
             val authViewModel = AuthViewModel(authRepository)
 
-            // Navigation
             Navigation(reservationViewModel = reservationViewModel, authViewModel = authViewModel)
         }
     }

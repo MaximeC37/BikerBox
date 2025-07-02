@@ -1,26 +1,26 @@
 package org.perso.bikerbox.ui.screens.Confirmation
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.*
 import kotlinx.datetime.LocalDateTime
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.LockerSize
 import org.perso.bikerbox.data.models.Reservation
 import org.perso.bikerbox.data.models.displayName
 import org.perso.bikerbox.ui.components.CodeDisplay
 import org.perso.bikerbox.ui.components.DetailRow
 import org.perso.bikerbox.ui.viewmodel.ReservationState
-import org.perso.bikerbox.utils.formatDecimal
 import org.perso.bikerbox.ui.viewmodel.ReservationViewModel
+import org.perso.bikerbox.utils.formatDecimal
 
 @Composable
 fun ConfirmationScreen(
@@ -39,8 +39,6 @@ fun ConfirmationScreen(
                 endDate = currentState.endDate,
                 price = currentState.price,
                 onConfirm = {
-                    Log.d("ConfirmationScreen", "Confirmation button clicked - Navigate to payment")
-                    // Directly navigate to payment
                     onConfirm()
                 },
                 onBack = onCancel
@@ -48,7 +46,6 @@ fun ConfirmationScreen(
         }
 
         is ReservationState.Success -> {
-            // Display confirmed reservation screen with code
             ConfirmationScreenContent(
                 reservation = currentState.reservation,
                 onDone = onConfirm
@@ -60,7 +57,7 @@ fun ConfirmationScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator()
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Loading reservation details...")
+                    Text(stringResource(Res.string.Loading_reservation_details))
                 }
             }
         }
@@ -69,13 +66,13 @@ fun ConfirmationScreen(
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Error: ${currentState.message}",
+                        text = "${stringResource(Res.string.Error)}: ${currentState.message}",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.error
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(onClick = onCancel) {
-                        Text("Back")
+                        Text(stringResource(Res.string.Back))
                     }
                 }
             }
@@ -87,11 +84,11 @@ fun ConfirmationScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator()
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Loading...")
+                    Text(stringResource(Res.string.Loading))
 
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(onClick = onCancel) {
-                        Text("Back")
+                        Text(stringResource(Res.string.Back))
                     }
                 }
             }
@@ -123,7 +120,7 @@ fun ConfirmationScreenContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = if (isPreConfirmation) "Confirm your reservation" else "Reservation confirmed!",
+                text = if (isPreConfirmation) stringResource(Res.string.Confirm_your_reservation) else stringResource(Res.string.Reservation_confirmed),
                 style = MaterialTheme.typography.headlineMedium
             )
 
@@ -135,30 +132,30 @@ fun ConfirmationScreenContent(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "Reservation details",
+                        text = stringResource(Res.string.Reservation_details),
                         style = MaterialTheme.typography.titleLarge
                     )
 
                     HorizontalDivider()
 
                     if (isPreConfirmation) {
-                        DetailRow(label = "Locker", value = lockerName ?: "")
-                        DetailRow(label = "Size", value = size?.displayName ?: "")
-                        DetailRow(label = "Start date", value = "$startDate")
-                        DetailRow(label = "End date", value = "$endDate")
-                        DetailRow(label = "Total price", value = "${price?.formatDecimal(2)} €")
+                        DetailRow(label = stringResource(Res.string.Locker), value = lockerName ?: "")
+                        DetailRow(label = stringResource(Res.string.Size), value = size?.displayName ?: "")
+                        DetailRow(label = stringResource(Res.string.Start_Date), value = "$startDate")
+                        DetailRow(label = stringResource(Res.string.End_Date), value = "$endDate")
+                        DetailRow(label = stringResource(Res.string.Total_price), value = "${price?.formatDecimal(2)} €")
                     } else {
                         reservation?.let {
-                            DetailRow(label = "Reservation number", value = it.id)
-                            DetailRow(label = "Size", value = it.size.displayName)
-                            DetailRow(label = "Start date", value = "${it.startDate}")
-                            DetailRow(label = "End date", value = "${it.endDate}")
-                            DetailRow(label = "Total price", value = "${it.price.formatDecimal(2)} €")
+                            DetailRow(label = stringResource(Res.string.Reservation_number), value = it.id)
+                            DetailRow(label = stringResource(Res.string.Size), value = it.size.displayName)
+                            DetailRow(label = stringResource(Res.string.Start_Date), value = "${it.startDate}")
+                            DetailRow(label = stringResource(Res.string.End_Date), value = "${it.endDate}")
+                            DetailRow(label = stringResource(Res.string.Total_price), value = "${it.price.formatDecimal(2)} €")
 
                             Spacer(modifier = Modifier.height(16.dp))
 
                             Text(
-                                text = "Your access code",
+                                text = stringResource(Res.string.Access_code),
                                 style = MaterialTheme.typography.titleMedium
                             )
 
@@ -181,13 +178,13 @@ fun ConfirmationScreenContent(
                             containerColor = MaterialTheme.colorScheme.secondary
                         )
                     ) {
-                        Text("Back")
+                        Text(stringResource(Res.string.Back))
                     }
 
                     Button(
                         onClick = { onConfirm?.invoke() }
                     ) {
-                        Text("Proceed to payment")
+                        Text(stringResource(Res.string.Proceed_to_payment))
                     }
                 }
             } else {
@@ -195,7 +192,7 @@ fun ConfirmationScreenContent(
                     onClick = { onDone?.invoke() },
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
-                    Text("Done")
+                    Text(stringResource(Res.string.Done))
                 }
             }
 

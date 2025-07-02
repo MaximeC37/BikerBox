@@ -9,23 +9,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import bikerbox.composeapp.generated.resources.Back
-import bikerbox.composeapp.generated.resources.Cancel
-import bikerbox.composeapp.generated.resources.Choose
-import bikerbox.composeapp.generated.resources.Choose_a_date
-import bikerbox.composeapp.generated.resources.Date_and_Time_Selection
-import bikerbox.composeapp.generated.resources.End_Date
-import bikerbox.composeapp.generated.resources.End_Time
-import bikerbox.composeapp.generated.resources.OK
-import bikerbox.composeapp.generated.resources.Res
-import bikerbox.composeapp.generated.resources.Start_Date
-import bikerbox.composeapp.generated.resources.Start_Time
+import bikerbox.composeapp.generated.resources.*
 import kotlinx.datetime.*
 import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.LockerSize
 import org.perso.bikerbox.data.models.basePricePerDay
 import org.perso.bikerbox.data.services.PricingService
-import kotlin.math.round
+import org.perso.bikerbox.utils.formatDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,14 +50,6 @@ fun DateSelectionScreen(
         }
     } else {
         0.0
-    }
-
-    if (calculatedPrice > 0) {
-        Text(
-            text = "Estimated price: ${calculatedPrice.round(2)}€",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
     }
 
     if (errorMessage.isNotEmpty()) {
@@ -105,25 +87,22 @@ fun DateSelectionScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Text(
-                text = "Locker: $lockerName - Size: ${selectedSize.name}",
+                text = "${stringResource(Res.string.Locker)}: $lockerName - ${stringResource(Res.string.Size)}: ${selectedSize.name}",
                 style = MaterialTheme.typography.titleMedium
             )
 
-            // For start date
             DateSelectionComponent(
                 title = stringResource(Res.string.Start_Date),
                 selectedDate = selectedStartDate,
                 onDateSelected = { selectedStartDate = it }
             )
 
-            // For end date
             DateSelectionComponent(
                 title = stringResource(Res.string.End_Date),
                 selectedDate = selectedEndDate,
                 onDateSelected = { selectedEndDate = it }
             )
 
-            // Start and end times
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -141,19 +120,16 @@ fun DateSelectionScreen(
                 )
             }
 
-            // Calculated price
             Text(
-                text = "Estimated price: ${calculatedPrice.round(2)}€",
+                text = "${stringResource(Res.string.Estimated_price)}: ${calculatedPrice.formatDecimal(2)}€",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 16.dp)
             )
 
-            // Confirmation button
             Button(
                 onClick = {
                     selectedStartDate?.let { start ->
                         selectedEndDate?.let { end ->
-                            // Convert LocalDate to LocalDateTime
                             val startDateTime = LocalDateTime(
                                 start.year,
                                 start.monthNumber,
@@ -220,18 +196,14 @@ fun DateSelectionComponent(
         }
 
         if (showDatePicker) {
-            // We can use null for initialization and let DatePicker use the current date
             val initialDateMillis = selectedDate?.let {
-                // Get current timestamp
                 val now = Clock.System.now().toEpochMilliseconds()
 
-                // Calculate approximately the difference in days
                 val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
                 val daysDiff = (it.dayOfMonth - today.dayOfMonth) +
                         30 * (it.monthNumber - today.monthNumber) +
                         365 * (it.year - today.year)
 
-                // Adjust timestamp (approximate, but sufficient for initialization)
                 now + (daysDiff * 24 * 60 * 60 * 1000L)
             }
 
@@ -277,33 +249,10 @@ private fun combineDateTime(date: LocalDate, timeString: String): LocalDateTime 
             hour, minute, 0, 0
         )
     } catch (e: Exception) {
-        // Log error for debugging
         println("Date/time conversion error: ${e.message}")
-        // Return default value or throw exception
         throw e
     }
 }
-
-// Extension to round a Double to n decimal places
-private fun Double.round(decimals: Int): String {
-    var multiplier = 1.0
-    repeat(decimals) { multiplier *= 10 }
-    val roundedValue = round(this * multiplier) / multiplier
-
-    return if (decimals > 0) {
-        val result = roundedValue.toString()
-        if (result.contains('.')) {
-            val parts = result.split('.')
-            val decimalPart = parts[1].padEnd(decimals, '0').take(decimals)
-            "${parts[0]}.$decimalPart"
-        } else {
-            "$result.${"0".repeat(decimals)}"
-        }
-    } else {
-        roundedValue.toInt().toString()
-    }
-}
-
 @Composable
 fun TimeSelectionComponent(
     title: String,

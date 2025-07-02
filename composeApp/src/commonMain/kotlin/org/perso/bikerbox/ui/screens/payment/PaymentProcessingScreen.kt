@@ -6,12 +6,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.ui.viewmodel.PaymentState
 import org.perso.bikerbox.utils.formatDecimal
 
@@ -45,18 +48,18 @@ fun PaymentProcessingScreen(
             )
 
             Text(
-                text = "Processing payment...",
+                text = stringResource(Res.string.Processing_payment),
                 style = MaterialTheme.typography.headlineSmall
             )
 
             Text(
-                text = "Montant: ${state.amount.formatDecimal(2)} €",
+                text = "${stringResource(Res.string.Amount)}: ${state.amount.formatDecimal(2)} €",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Text(
-                text = "Please wait, do not close the application",
+                text = stringResource(Res.string.Please_not_close_application),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -86,7 +89,7 @@ fun PaymentSuccessScreen(
             )
 
             Text(
-                text = "Payment successful!",
+                text = stringResource(Res.string.Payment_successful),
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color(0xFF4CAF50)
             )
@@ -102,7 +105,7 @@ fun PaymentSuccessScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Amount:")
+                        Text("${stringResource(Res.string.Amount)}:")
                         Text(
                             text = "${state.payment.amount.formatDecimal(2)} €",
                             style = MaterialTheme.typography.bodyLarge
@@ -113,7 +116,7 @@ fun PaymentSuccessScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Transaction ID:")
+                        Text("${stringResource(Res.string.Transaction_ID)}:")
                         Text(
                             text = state.payment.transactionId,
                             style = MaterialTheme.typography.bodyMedium
@@ -124,7 +127,7 @@ fun PaymentSuccessScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Method:")
+                        Text("${stringResource(Res.string.Method)}:")
                         Text(
                             text = state.payment.paymentMethod.displayName,
                             style = MaterialTheme.typography.bodyMedium
@@ -137,7 +140,7 @@ fun PaymentSuccessScreen(
                 onClick = onContinue,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Continue")
+                Text(stringResource(Res.string.Continue))
             }
         }
     }
@@ -166,7 +169,7 @@ fun PaymentErrorScreen(
             )
 
             Text(
-                text = "Payment error",
+                text = stringResource(Res.string.Payment_error),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.error
             )
@@ -185,14 +188,14 @@ fun PaymentErrorScreen(
                     onClick = onCancel,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(Res.string.Cancel))
                 }
 
                 Button(
                     onClick = onRetry,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Retry")
+                    Text(stringResource(Res.string.Retry))
                 }
             }
         }

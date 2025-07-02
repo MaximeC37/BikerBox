@@ -12,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.PaymentCard
 import org.perso.bikerbox.data.models.PaymentMethod
 import org.perso.bikerbox.ui.components.OfficialCardTypeIcon
@@ -30,7 +32,7 @@ fun PaymentMethodScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Payment Method") },
+                title = { Text(stringResource(Res.string.Payment_Method)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -62,7 +64,7 @@ fun PaymentMethodScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Amount to pay",
+                            text = stringResource(Res.string.Amount_pay),
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(
@@ -75,11 +77,10 @@ fun PaymentMethodScreen(
                 }
             }
 
-            // Saved cards
             if (state.availableCards.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Saved cards",
+                        text = stringResource(Res.string.Saved_cards),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
@@ -95,7 +96,6 @@ fun PaymentMethodScreen(
                 }
             }
 
-            // Add new card
             item {
                 OutlinedCard(
                     modifier = Modifier.fillMaxWidth(),
@@ -116,7 +116,7 @@ fun PaymentMethodScreen(
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = "Add new card",
+                            text = stringResource(Res.string.Add_new_card),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -124,10 +124,9 @@ fun PaymentMethodScreen(
                 }
             }
 
-            // Other payment methods
             item {
                 Text(
-                    text = "Other methods",
+                    text = stringResource(Res.string.Other_methods),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
@@ -190,7 +189,7 @@ fun PaymentCardItem(
             if (card.isDefault) {
                 AssistChip(
                     onClick = { },
-                    label = { Text("Default") }
+                    label = { Text(stringResource(Res.string.Default)) }
                 )
             }
         }
@@ -227,11 +226,11 @@ fun PaymentMethodItem(
                 )
                 Text(
                     text = when (method) {
-                        PaymentMethod.PAYPAL -> "Secure payment via PayPal"
-                        PaymentMethod.APPLE_PAY -> "Touch ID or Face ID"
-                        PaymentMethod.GOOGLE_PAY -> "Fast and secure payment"
-                        PaymentMethod.CREDIT_CARD -> "Visa, Mastercard, etc."
-                        PaymentMethod.BANK_TRANSFER -> "Instant SEPA transfer"
+                        PaymentMethod.PAYPAL -> stringResource(Res.string.Secure_payment_PayPal)
+                        PaymentMethod.APPLE_PAY -> stringResource(Res.string.Touch_ID_Face_ID)
+                        PaymentMethod.GOOGLE_PAY -> stringResource(Res.string.Fast_and_secure_payment)
+                        PaymentMethod.CREDIT_CARD -> stringResource(Res.string.Visa_Mastercard)
+                        PaymentMethod.BANK_TRANSFER -> stringResource(Res.string.Instant_SEPA_transfer)
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant

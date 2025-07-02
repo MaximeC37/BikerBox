@@ -12,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.*
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.Resource
 import org.perso.bikerbox.ui.viewmodel.AuthViewModel
 
@@ -64,7 +66,7 @@ fun ProfileScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Profil") },
+                title = { Text(stringResource(Res.string.My_Profil)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -99,7 +101,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Email",
+                text = stringResource(Res.string.Email),
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -117,12 +119,12 @@ fun ProfileScreen(
                 OutlinedTextField(
                     value = displayName,
                     onValueChange = { displayName = it },
-                    label = { Text("Display name") },
+                    label = { Text(stringResource(Res.string.Display_name)) },
                     modifier = Modifier.fillMaxWidth()
                 )
             } else {
                 Text(
-                    text = "Display name",
+                    text = stringResource(Res.string.Display_name),
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -143,12 +145,12 @@ fun ProfileScreen(
                 OutlinedTextField(
                     value = phoneNumber,
                     onValueChange = { phoneNumber = it },
-                    label = { Text("Phone number") },
+                    label = { Text(stringResource(Res.string.Phone_number)) },
                     modifier = Modifier.fillMaxWidth()
                 )
             } else {
                 Text(
-                    text = "Phone number",
+                    text = stringResource(Res.string.Phone_number),
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -182,7 +184,7 @@ fun ProfileScreen(
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     } else {
-                        Text("Enregistrer")
+                        Text(stringResource(Res.string.Save))
                     }
                 }
             }

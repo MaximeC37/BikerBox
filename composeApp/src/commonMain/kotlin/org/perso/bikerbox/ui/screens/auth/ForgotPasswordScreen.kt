@@ -8,14 +8,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import bikerbox.composeapp.generated.resources.Email
-import bikerbox.composeapp.generated.resources.Enter_email_to_receive_password_reset_link
-import bikerbox.composeapp.generated.resources.Forgotten_password
-import bikerbox.composeapp.generated.resources.Password_Reset
-import bikerbox.composeapp.generated.resources.Res
-import bikerbox.composeapp.generated.resources.Send_reset_link
+import bikerbox.composeapp.generated.resources.*
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.Resource

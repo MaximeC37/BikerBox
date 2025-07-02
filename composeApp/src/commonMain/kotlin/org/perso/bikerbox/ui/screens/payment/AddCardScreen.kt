@@ -9,6 +9,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.CardType
 import org.perso.bikerbox.data.models.PaymentCard
 import org.perso.bikerbox.ui.viewmodel.PaymentViewModel
@@ -29,7 +31,7 @@ fun AddCardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add Card") },
+                title = { Text(stringResource(Res.string.Add_cart)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -55,8 +57,8 @@ fun AddCardScreen(
                         cardNumber = formatCardNumber(value)
                     }
                 },
-                label = { Text("Card Number") },
-                placeholder = { Text("1234 5678 9012 3456") },
+                label = { Text(stringResource(Res.string.Card_number)) },
+                placeholder = { Text(stringResource(Res.string.Fake_card_number)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -64,7 +66,7 @@ fun AddCardScreen(
             OutlinedTextField(
                 value = cardHolderName,
                 onValueChange = { cardHolderName = it },
-                label = { Text("Cardholder Name") },
+                label = { Text(stringResource(Res.string.Cardholder_Name)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -79,8 +81,8 @@ fun AddCardScreen(
                             expiryMonth = value
                         }
                     },
-                    label = { Text("Month") },
-                    placeholder = { Text("MM") },
+                    label = { Text(stringResource(Res.string.Month)) },
+                    placeholder = { Text(stringResource(Res.string.MM)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.weight(1f)
                 )
@@ -92,8 +94,8 @@ fun AddCardScreen(
                             expiryYear = value
                         }
                     },
-                    label = { Text("Year") },
-                    placeholder = { Text("YYYY") },
+                    label = { Text(stringResource(Res.string.Year)) },
+                    placeholder = { Text(stringResource(Res.string.YYYY)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.weight(1f)
                 )
@@ -105,8 +107,8 @@ fun AddCardScreen(
                             cvv = value
                         }
                     },
-                    label = { Text("CVV") },
-                    placeholder = { Text("123") },
+                    label = { Text(stringResource(Res.string.CVV)) },
+                    placeholder = { Text(stringResource(Res.string.CVV_placeholder)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.weight(1f)
                 )
@@ -120,7 +122,7 @@ fun AddCardScreen(
                     onCheckedChange = { isDefault = it }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Set as default card")
+                Text(stringResource(Res.string.Set_default_card))
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -142,7 +144,7 @@ fun AddCardScreen(
                         expiryMonth.isNotBlank() && expiryYear.isNotBlank() && cvv.isNotBlank(),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Add Card")
+                Text(stringResource(Res.string.Add_cart))
             }
         }
     }
