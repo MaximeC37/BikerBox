@@ -145,7 +145,7 @@ fun ConfirmationScreenContent(
                         DetailRow(label = stringResource(Res.string.End_Date), value = "$endDate")
                         DetailRow(label = stringResource(Res.string.Total_price), value = "${price?.formatDecimal(2)} €")
                     } else {
-                        reservation?.let {
+                        reservation.let {
                             DetailRow(label = stringResource(Res.string.Reservation_number), value = it.id)
                             DetailRow(label = stringResource(Res.string.Size), value = it.size.displayName)
                             DetailRow(label = stringResource(Res.string.Start_Date), value = "${it.startDate}")

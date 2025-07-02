@@ -1,72 +1,85 @@
 # BikerBox 🏍
 
-## ⚠️ Statut du Projet : En Développement Actif
-Ce projet est actuellement en cours de développement et n'est pas encore finalisé. Certaines fonctionnalités peuvent être incomplètes ou sujettes à modification. Version actuelle : Alpha 0.1
+## ⚠️ Project Status: Active Development
+This project is currently under development and not yet finalized. Some features may be incomplete or subject to change.
+Current version: Alpha 0.2
 
-## À propos
-BikerBox est un projet personnel d'application mobile en cours de développement, destiné aux motards. Cette application est un prototype/démonstrateur technique développé à des fins d'apprentissage et d'expérimentation avec Kotlin Multiplatform et Jetpack Compose. Elle simule un système de gestion de casiers sécurisés permettant aux motards de stocker leurs équipements (casques, blousons, etc.).
+## About
+BikerBox is a personal mobile application project under development, designed for bikers. This application is a prototype/technical demonstrator developed for learning purposes and experimentation with Kotlin Multiplatform and Jetpack Compose. It simulates a secure locker management system allowing bikers to store their equipment (helmets, jackets, etc.).
 
-⚠️ **Notes importantes** :
-- Projet en développement actif : des changements majeurs peuvent survenir
-- Ceci est un projet personnel de démonstration et n'est pas destiné à une utilisation en production
-- Certaines fonctionnalités sont encore en cours d'implémentation
+⚠️ **Important notes**:
+- Project in active development: major changes may occur
+- This is a personal demonstration project and is not intended for production use
+- Some features are still being implemented
 
-## 🌟 Fonctionnalités
+## 🌟 Features
 
-### Implémentées ✅
-- Système d'authentification basique
-- Interface utilisateur principale
-- Navigation entre les écrans
-- Configuration Firebase de base
+### Recently Implemented ✅
+- **Complete localization system** with string resources
+- **Enhanced payment flow** with confirmation and booking management
+- **Multiple payment methods** support (Apple Pay, Google Pay, Visa, Mastercard, PayPal)
+- **Improved reservation system** with simplified navigation
+- **Enhanced pricing logic** for better accuracy
+- **Clean architecture** with unused components removal
+- **Better user interface** with consistent translations
 
-### En Cours de Développement 🚧
-- Système complet de gestion des casiers
-- Profil utilisateur avancé
-- Historique des réservations
-- Système de notifications
+### Core Features ✅
+- Authentication system
+- Main user interface with improved navigation
+- Date selection with enhanced calendar interface
+- Reservation confirmation flow
+- Payment processing system
+- User reservation management
 
-### Planifiées 📋
-- Mode hors ligne
-- Système de paiement (simulation)
-- Interface administrateur
-- Support multilingue complet
+### In Development 🚧
+- Advanced user profile features
+- Notification system enhancements
+- Performance optimizations
 
-## 🔧 Prérequis Techniques
+### Planned 📋
+- Offline mode
+- Administrator interface
+- Advanced analytics
+- Extended payment options
 
-- Android Studio Hedgehog | 2023.1.1 ou plus récent
+## 🔧 Technical Prerequisites
+
+- Android Studio Hedgehog | 2023.1.1 or newer
 - JDK 23
-- Kotlin 2.1.20
-- Android SDK 34
-- Un compte Firebase (pour le développement)
+- Kotlin 2.2.0
+- Android SDK 36 (compileSdk)
+- Gradle 8.14.2
+- AGP 8.11.0-alpha07
+- A Firebase account (for development)
 - Git
 
 ## 📥 Installation
 
-### 1. Cloner le Repository
+### 1. Clone the Repository
+
 
 bash git clone [https://github.com/votre-username/BikerBox.git](https://github.com/votre-username/BikerBox.git) cd BikerBox
 
-### 2. Configuration Firebase
+### 2. Firebase Configuration
 
-1. Créez un projet dans la [Console Firebase](https://console.firebase.google.com/)
-2. Ajoutez une application Android avec le package `org.perso.bikerbox`
-3. Téléchargez le fichier `google-services.json`
-4. Placez-le dans le dossier `composeApp/`
+1. Create a project in the [Firebase Console](https://console.firebase.google.com/)
+2. Add an Android application with the package `org.perso.bikerbox`
+3. Download the `google-services.json` file
+4. Place it in the `composeApp/` folder
 
-Note : Un fichier `google-services.json.example` est fourni dans le dépôt comme exemple de structure. **Ne pas l'utiliser en production.**
+Note: A `google-services.json.example` file is provided in the repository as a structure example. **Do not use it in production.**
 
-Les étapes supplémentaires nécessaires :
-- Activez Authentication (Email/Password)
-- Configurez Firestore Database
-- Configurez Storage si nécessaire
+Additional required steps:
+- Enable Authentication (Email/Password)
+- Configure Firestore Database
+- Configure Storage if necessary
 
+### 3. Project Configuration
 
-### 3. Configuration du Projet
-
-1. Ouvrez le projet dans Android Studio
-2. Synchronisez le projet avec Gradle
-3. Vérifiez que toutes les dépendances sont téléchargées
-4. Configurez votre fichier `local.properties` avec:
+1. Open the project in Android Studio
+2. Sync the project with Gradle
+3. Verify that all dependencies are downloaded
+4. Configure your `local.properties` file with:
 ```properties
 sdk.dir=CHEMIN_VERS_VOTRE_SDK_ANDROID
 ```
@@ -76,37 +89,58 @@ sdk.dir=CHEMIN_VERS_VOTRE_SDK_ANDROID
 - Certaines fonctionnalités sont simulées ou partiellement implémentées
 - Les performances peuvent ne pas être optimales pendant la phase de développement
 
-## 🚀 Compilation et Exécution
+## 🚀 Build and Run
 ### Android
-1. Sélectionnez la configuration 'composeApp'
-2. Choisissez un appareil ou émulateur Android
-3. Cliquez sur 'Run'
+1. Select the 'composeApp' configuration
+2. Choose an Android device or emulator
+3. Click 'Run'
 
-### Web (Version de développement)
+### Web (Development version)
 ``` bash
 ./gradlew :composeApp:wasmJsBrowserDevelopmentRun
 ```
 ## 🏗 Architecture
-Ce projet personnel suit l'architecture MVVM (Model-View-ViewModel) et est structuré en plusieurs couches:
-- **data**: Repositories et sources de données
-- **domain**: Modèles et cas d'utilisation
-- **ui**: Écrans et composants d'interface utilisateur
-- **di**: Injection de dépendances
-- **utils**: Utilitaires et extensions
+This personal project follows the MVVM (Model-View-ViewModel) architecture and is structured in several layers:
+- **data**: Repositories and data sources
+- **domain**: Models and use cases
+- **ui**: Screens and user interface components
+- **di**: Dependency injection
+- **utils**: Utilities and extensions
 
-## 🛠 Technologies Utilisées
-- **Kotlin Multiplatform** - Pour le partage de code entre plateformes
-- **Compose Multiplatform** - Pour l'interface utilisateur
-- **Firebase** - Pour l'authentification et le stockage de données
-- **Koin** - Pour l'injection de dépendances
-- **Kotlin Coroutines** - Pour la programmation asynchrone
-- **Kotlin Flow** - Pour la programmation réactive
+## 🛠 Technologies Used
+- **Kotlin Multiplatform 2.2.0** - For code sharing between platforms
+- **Compose Multiplatform 1.8.2** - For user interface
+- **Firebase** - For authentication and data storage
+- **Koin** - For dependency injection
+- **Kotlin Coroutines** - For asynchronous programming
+- **Kotlin Flow** - For reactive programming
+- **Lifecycle 2.9.1** - For lifecycle management
 
-## 🎯 Objectifs du Projet
-Ce projet personnel a été développé dans le but de :
-- Explorer les capacités de Kotlin Multiplatform
-- Expérimenter avec Jetpack Compose
-- Mettre en pratique les principes de l'architecture MVVM
-- Créer une démonstration technique d'une application mobile moderne
+## 🌍 Localization
+The app now features a complete localization system:
+- All UI text is externalized to string resources
+- Consistent English translation throughout the application
+- Easy to extend for additional languages
+- Improved maintainability and translation management
 
-Projet personnel en développement actif 🚧 | Développé avec ❤️ pour explorer le développement mobile moderne
+## 💳 Payment Integration
+Supports multiple payment methods with visual branding:
+- Apple Pay
+- Google Pay
+- Visa
+- Mastercard
+- PayPal
+
+## 📈 Recent Updates
+- **v0.2**: Complete UI localization, enhanced payment flow, improved reservation system
+- **v0.1**: Initial release with basic authentication and navigation
+
+## 🎯 Project Goals
+This personal project was developed with the aim of:
+- Exploring Kotlin Multiplatform capabilities
+- Experimenting with Jetpack Compose
+- Putting MVVM architecture principles into practice
+- Creating a technical demonstration of a modern mobile application
+- Implementing modern UI/UX patterns and localization best practices
+
+Personal project in active development 🚧 | Developed with ❤️ to explore modern mobile development
