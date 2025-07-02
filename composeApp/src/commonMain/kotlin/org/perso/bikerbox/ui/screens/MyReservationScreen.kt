@@ -6,20 +6,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.Reservation
 import org.perso.bikerbox.data.models.Resource
 import org.perso.bikerbox.ui.viewmodel.ReservationViewModel
+import org.perso.bikerbox.utils.formatDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +37,7 @@ fun MyReservationsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Reservations") },
+                title = { Text(stringResource(Res.string.My_Reservations)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -56,7 +53,7 @@ fun MyReservationsScreen(
                     Snackbar(
                         action = {
                             TextButton(onClick = { viewModel.clearUiMessage() }) {
-                                Text("OK")
+                                Text(stringResource(Res.string.OK))
                             }
                         }
                     ) {
@@ -77,7 +74,7 @@ fun MyReservationsScreen(
                 ) {
                     CircularProgressIndicator()
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Loading your reservations...")
+                    Text(stringResource(Res.string.Loading_your_reservations))
                 }
             }
             is Resource.Error -> {
@@ -90,7 +87,7 @@ fun MyReservationsScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Error: ${state.message}",
+                        text = "${stringResource(Res.string.Error)}: ${state.message}",
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -111,7 +108,7 @@ fun MyReservationsScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "You don't have any reservations yet",
+                            text = stringResource(Res.string.You_dont_have_reservations_yet),
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -128,7 +125,6 @@ fun MyReservationsScreen(
                             ReservationCard(
                                 reservation = reservation,
                                 onCancelReservation = { reservationId ->
-                                    println(" UI: Cancellation requested for: $reservationId")
                                     viewModel.cancelReservation(reservationId)
                                 }
                             )
@@ -145,27 +141,25 @@ fun ReservationCard(
     reservation: Reservation,
     onCancelReservation: (String) -> Unit
 ) {
-    //  NOUVEAU : État pour confirmer la suppression
     var showConfirmDialog by remember { mutableStateOf(false) }
 
     if (showConfirmDialog) {
         AlertDialog(
-            onDismissRequest = { showConfirmDialog = false },
-            title = { Text("Confirm Cancellation") },
-            text = { Text("Are you sure you want to cancel this reservation?") },
+            onDismissRequest = {},
+            title = { Text(stringResource(Res.string.Confirm_Cancellation)) },
+            text = { Text(stringResource(Res.string.Are_you_sure_cancel_reservation)) },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        showConfirmDialog = false
                         onCancelReservation(reservation.id)
                     }
                 ) {
-                    Text("Confirm")
+                    Text(stringResource(Res.string.Confirm))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showConfirmDialog = false }) {
-                    Text("Cancel")
+                TextButton(onClick = { }) {
+                    Text(stringResource(Res.string.Cancel))
                 }
             }
         )
@@ -178,23 +172,19 @@ fun ReservationCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            // Reservation information
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Locker #${reservation.lockerId}",
+                    text = "${stringResource(Res.string.Locker)} #${reservation.lockerId}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
 
                 IconButton(
-                    onClick = {
-                        println(" Delete button clicked for: ${reservation.id}")
-                        showConfirmDialog = true
-                    }
+                    onClick = {}
                 ) {
                     Icon(
                         Icons.Default.Delete,
@@ -207,18 +197,18 @@ fun ReservationCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Size: ${reservation.size.name}",
+                text = "${stringResource(Res.string.Size)}: ${reservation.size.name}",
                 style = MaterialTheme.typography.bodyMedium
             )
 
             // Dates
             Text(
-                text = "From: ${formatDateTime(reservation.startDate)}",
+                text = "${stringResource(Res.string.From)}: ${formatDateTime(reservation.startDate)}",
                 style = MaterialTheme.typography.bodyMedium
             )
 
             Text(
-                text = "To: ${formatDateTime(reservation.endDate)}",
+                text = "${stringResource(Res.string.To)}: ${formatDateTime(reservation.endDate)}",
                 style = MaterialTheme.typography.bodyMedium
             )
 
@@ -229,13 +219,13 @@ fun ReservationCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Code: ${reservation.code}",
+                    text = "${stringResource(Res.string.Code)}: ${reservation.code}",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
 
                 Text(
-                    text = "Price: ${reservation.price.round(2)}€",
+                    text = "${stringResource(Res.string.Price)}: ${reservation.price.formatDecimal(2)}€",
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -243,27 +233,6 @@ fun ReservationCard(
     }
 }
 
-// Extension to format dates
 private fun formatDateTime(dateTime: kotlinx.datetime.LocalDateTime): String {
     return "${dateTime.dayOfMonth}/${dateTime.monthNumber}/${dateTime.year} - ${dateTime.hour}:${dateTime.minute.toString().padStart(2, '0')}"
-}
-
-// Reuse extension to round price
-private fun Double.round(decimals: Int): String {
-    var multiplier = 1.0
-    repeat(decimals) { multiplier *= 10 }
-    val roundedValue = kotlin.math.round(this * multiplier) / multiplier
-
-    return if (decimals > 0) {
-        val result = roundedValue.toString()
-        if (result.contains('.')) {
-            val parts = result.split('.')
-            val decimalPart = parts[1].padEnd(decimals, '0').take(decimals)
-            "${parts[0]}.$decimalPart"
-        } else {
-            "$result.${"0".repeat(decimals)}"
-        }
-    } else {
-        roundedValue.toInt().toString()
-    }
 }

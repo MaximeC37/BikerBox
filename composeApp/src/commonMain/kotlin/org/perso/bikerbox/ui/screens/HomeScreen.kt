@@ -19,8 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.*
 import formatToString
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.Locker
 import org.perso.bikerbox.data.models.Resource
 import org.perso.bikerbox.ui.viewmodel.AuthViewModel
@@ -42,8 +44,6 @@ fun HomeScreen(
     val state by viewModel.state.collectAsState()
     val availableLockers by viewModel.availableLockers.collectAsState()
 
-    android.util.Log.d("HomeScreen", "Current status: $state")
-    android.util.Log.d("HomeScreen", "Number of lockers in availableLockers: ${availableLockers.size}")
     availableLockers.forEachIndexed { index, locker ->
         android.util.Log.d("HomeScreen", "Locker $index in availableLockers: ${locker.name}, ${locker.availableSizes}")
     }
@@ -53,17 +53,17 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("BikerBox") },
+                title = { Text(stringResource(Res.string.BikerBox)) },
                 actions = {
                     IconButton(onClick = { onNavigateToReservations() }) {
                         Icon(Icons.AutoMirrored.Filled.List, contentDescription = "My réservations")
                     }
-                    IconButton(onClick = { showMenu = true }) {
+                    IconButton(onClick = { }) {
                         Icon(Icons.Default.AccountCircle, contentDescription = "Profil")
 
                         DropdownMenu(
                             expanded = showMenu,
-                            onDismissRequest = { showMenu = false }
+                            onDismissRequest = { }
                         ) {
                             currentUser?.let { user ->
                                 Text(
@@ -75,15 +75,13 @@ fun HomeScreen(
 
                             DropdownMenuItem(
                                 onClick = {
-                                    showMenu = false
                                     onNavigateToProfile()
                                 },
-                                text = { Text("My profil") }
+                                text = { Text(stringResource(Res.string.My_Profil)) }
                             )
 
                             DropdownMenuItem(
                                 onClick = {
-                                    showMenu = false
                                     onSignOut()
                                 },
                                 text = {
@@ -92,7 +90,7 @@ fun HomeScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
-                                        Text("Log out")
+                                        Text(stringResource(Res.string.Log_out))
                                     }
                                 }
                             )
@@ -135,16 +133,16 @@ fun HomeScreen(
                                 Column {
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Text(
-                                        "Loading longer than expected?",
+                                        stringResource(Res.string.Loading_longer),
                                         style = MaterialTheme.typography.bodySmall
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Button(onClick = { viewModel.loadUserReservations() }) {
-                                        Text("Refresh")
+                                        Text(stringResource(Res.string.Refresh))
                                     }
                                     Spacer(modifier = Modifier.height(8.dp))
                                     OutlinedButton(onClick = { viewModel.reset() }) {
-                                        Text("Return to home page")
+                                        Text(stringResource(Res.string.Back_to_home))
                                     }
                                 }
                             }
@@ -153,17 +151,15 @@ fun HomeScreen(
                 }
 
                 is ReservationState.Error -> {
-                    android.util.Log.d("HomeScreen", "Error display: ${currentState.message}")
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("Error: ${currentState.message}")
+                        Text("${stringResource(Res.string.Error)}: ${currentState.message}")
                     }
                 }
 
                 is ReservationState.LockerSelection -> {
-                    android.util.Log.d("HomeScreen", "State LockerSelection with ${currentState.lockers.size} casiers")
                     currentState.lockers.forEachIndexed { index, locker ->
                         android.util.Log.d("HomeScreen", "Locker $index in the State: ${locker.name}, size: ${locker.availableSizes}")
                     }
@@ -175,7 +171,7 @@ fun HomeScreen(
                                 .padding(16.dp)
                         ) {
                             Text(
-                                text = "Lockers available",
+                                text = stringResource(Res.string.Lockers_available),
                                 style = MaterialTheme.typography.headlineMedium,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(bottom = 16.dp)
@@ -187,13 +183,9 @@ fun HomeScreen(
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 items(currentState.lockers) { locker ->
-                                    // Log avant de créer la carte
-                                    android.util.Log.d("HomeScreen", "Creation of LockerCard for: ${locker.name}")
-
                                     LockerCard(
                                         locker = locker,
                                         onClick = {
-                                            android.util.Log.d("HomeScreen", "Locker selected: ${locker.name}")
                                             viewModel.selectLocker(locker)
                                             onSelectLocker(locker.id)
                                         }
@@ -206,7 +198,7 @@ fun HomeScreen(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("No lockers currently available.")
+                            Text(stringResource(Res.string.No_lockers_available))
                         }
                     }
                 }
@@ -230,7 +222,7 @@ fun HomeScreen(
                             Spacer(modifier = Modifier.height(16.dp))
 
                             Text(
-                                text = "Reservation confirmed!",
+                                text = stringResource(Res.string.Reservation_confirmed),
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold
                             )
@@ -238,7 +230,7 @@ fun HomeScreen(
                             Spacer(modifier = Modifier.height(8.dp))
 
                             Text(
-                                text = "Your locker ${currentState.reservation.lockerName} is reserved",
+                                text = "${stringResource(Res.string.Your_locker)} ${currentState.reservation.lockerName} ${stringResource(Res.string.Is_reserved)}",
                                 style = MaterialTheme.typography.bodyLarge,
                                 textAlign = TextAlign.Center
                             )
@@ -268,7 +260,7 @@ fun HomeScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = "Access code",
+                                        text = stringResource(Res.string.Access_code),
                                         style = MaterialTheme.typography.labelMedium
                                     )
                                     Text(
@@ -285,16 +277,15 @@ fun HomeScreen(
                                 onClick = { onNavigateToReservations() },
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text("View my reservations")
+                                Text(stringResource(Res.string.View_my_reservations))
                             }
-
                             Spacer(modifier = Modifier.height(8.dp))
 
                             OutlinedButton(
                                 onClick = { viewModel.reset() },
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text("Back to home")
+                                Text(stringResource(Res.string.Back_to_home))
                             }
                         }
                     }
@@ -307,7 +298,7 @@ fun HomeScreen(
                                 .padding(16.dp)
                         ) {
                             Text(
-                                text = "Lockers available",
+                                text = stringResource(Res.string.Lockers_available),
                                 style = MaterialTheme.typography.headlineMedium,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(bottom = 16.dp)
@@ -334,7 +325,7 @@ fun HomeScreen(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("No lockers currently available.")
+                            Text(stringResource(Res.string.No_lockers_available))
                         }
                     }
                 }

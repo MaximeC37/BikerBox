@@ -7,7 +7,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-// Définition des couleurs personnalisées
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF0066CC),
     onPrimary = Color.White,

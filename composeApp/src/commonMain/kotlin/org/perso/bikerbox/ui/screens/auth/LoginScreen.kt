@@ -1,37 +1,18 @@
 package org.perso.bikerbox.ui.screens.auth
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.*
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.Resource
 import org.perso.bikerbox.ui.viewmodel.AuthViewModel
 
@@ -99,10 +80,10 @@ fun LoginScreen(
                     email = it
                     isEmailValid = it.isEmpty() || isValidEmail(it)
                 },
-                label = { Text("Email") },
+                label = { Text(stringResource(Res.string.Email)) },
                 isError = !isEmailValid,
                 supportingText = {
-                    if (!isEmailValid) Text("Invalid email")
+                    if (!isEmailValid) Text(stringResource(Res.string.Invalid_email))
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -119,10 +100,10 @@ fun LoginScreen(
                     password = it
                     isPasswordValid = it.length >= 6
                 },
-                label = { Text("Password") },
+                label = { Text(stringResource(Res.string.Password)) },
                 isError = !isPasswordValid,
                 supportingText = {
-                    if (!isPasswordValid) Text("6 characters min")
+                    if (!isPasswordValid) Text(stringResource(Res.string._6_characters_min))
                 },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
@@ -138,7 +119,7 @@ fun LoginScreen(
                 onClick = onNavigateToForgotPassword,
                 modifier = Modifier.align(Alignment.End)
             ) {
-                Text("Forgot your password?")
+                Text(stringResource(Res.string.Forgot_your_password))
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -157,7 +138,7 @@ fun LoginScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("Log in")
+                    Text(stringResource(Res.string.Log_in))
                 }
             }
 
@@ -166,7 +147,7 @@ fun LoginScreen(
             TextButton(
                 onClick = onNavigateToSignUp
             ) {
-                Text("New user? Create an account")
+                Text(stringResource(Res.string.New_user_create_account))
             }
         }
     }

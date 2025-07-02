@@ -33,7 +33,18 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import bikerbox.composeapp.generated.resources.Already_account_Log_in
+import bikerbox.composeapp.generated.resources.Confirm_password
+import bikerbox.composeapp.generated.resources.Create_account
+import bikerbox.composeapp.generated.resources.Email
+import bikerbox.composeapp.generated.resources.Invalid_email
+import bikerbox.composeapp.generated.resources.Password
+import bikerbox.composeapp.generated.resources.Passwords_do_not_match
+import bikerbox.composeapp.generated.resources.Register
+import bikerbox.composeapp.generated.resources.Res
+import bikerbox.composeapp.generated.resources._6_characters_min
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.Resource
 import org.perso.bikerbox.ui.viewmodel.AuthViewModel
 
@@ -86,7 +97,7 @@ fun SignUpScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Create an account",
+                text = stringResource(Res.string.Create_account),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 32.dp, top = 32.dp)
             )
@@ -97,10 +108,10 @@ fun SignUpScreen(
                     email = it
                     isEmailValid = it.isEmpty() || isValidEmail(it)
                 },
-                label = { Text("Email") },
+                label = { Text(stringResource(Res.string.Email))},
                 isError = !isEmailValid,
                 supportingText = {
-                    if (!isEmailValid) Text("Invalid email")
+                    if (!isEmailValid) Text(stringResource(Res.string.Invalid_email))
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -118,10 +129,10 @@ fun SignUpScreen(
                     isPasswordValid = it.length >= 6
                     doPasswordsMatch = it == confirmPassword
                 },
-                label = { Text("Password") },
+                label = { Text(stringResource(Res.string.Password)) },
                 isError = !isPasswordValid,
                 supportingText = {
-                    if (!isPasswordValid) Text("6 characters min")
+                    if (!isPasswordValid) Text(stringResource(Res.string._6_characters_min))
                 },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
@@ -139,10 +150,10 @@ fun SignUpScreen(
                     confirmPassword = it
                     doPasswordsMatch = password == it
                 },
-                label = { Text("Confirm password") },
+                label = { Text(stringResource(Res.string.Confirm_password)) },
                 isError = !doPasswordsMatch,
                 supportingText = {
-                    if (!doPasswordsMatch) Text("Passwords do not match")
+                    if (!doPasswordsMatch) Text(stringResource(Res.string.Passwords_do_not_match))
                 },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
@@ -170,7 +181,7 @@ fun SignUpScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("Register")
+                    Text(stringResource(Res.string.Register))
                 }
             }
 
@@ -179,7 +190,7 @@ fun SignUpScreen(
             TextButton(
                 onClick = onNavigateToLogin
             ) {
-                Text("Already have an account? Log in")
+                Text(stringResource(Res.string.Already_account_Log_in))
             }
 
             Spacer(modifier = Modifier.height(32.dp))
