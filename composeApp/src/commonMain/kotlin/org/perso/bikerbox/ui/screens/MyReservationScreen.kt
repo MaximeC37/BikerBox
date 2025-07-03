@@ -145,7 +145,7 @@ fun ReservationCard(
 
     if (showConfirmDialog) {
         AlertDialog(
-            onDismissRequest = {},
+            onDismissRequest = {showConfirmDialog = false },
             title = { Text(stringResource(Res.string.Confirm_Cancellation)) },
             text = { Text(stringResource(Res.string.Are_you_sure_cancel_reservation)) },
             confirmButton = {
@@ -158,7 +158,7 @@ fun ReservationCard(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { }) {
+                TextButton(onClick = { showConfirmDialog = false }) {
                     Text(stringResource(Res.string.Cancel))
                 }
             }
@@ -184,7 +184,7 @@ fun ReservationCard(
                 )
 
                 IconButton(
-                    onClick = {}
+                    onClick = {showConfirmDialog = true }
                 ) {
                     Icon(
                         Icons.Default.Delete,

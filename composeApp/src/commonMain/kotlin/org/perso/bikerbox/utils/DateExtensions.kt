@@ -2,6 +2,7 @@ package org.perso.bikerbox.utils
 
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.plus
 
 fun LocalDate.plusDays(days: Int): LocalDate {
@@ -32,3 +33,18 @@ fun LocalDate.toFormattedString(): String {
 
     return "$dayOfMonth ${monthNames[monthNumber - 1]} $year"
 }
+fun LocalDateTime.toFormattedString(): String {
+    val monthNames = listOf(
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    )
+
+    val formattedTime = String.format("%02d:%02d", hour, minute)
+    return "$dayOfMonth ${monthNames[monthNumber - 1]} $year at $formattedTime"
+}
+
+fun LocalDateTime.toShortFormattedString(): String {
+    val formattedTime = String.format("%02d:%02d", hour, minute)
+    return "${String.format("%02d", dayOfMonth)}/${String.format("%02d", monthNumber)}/$year $formattedTime"
+}
+

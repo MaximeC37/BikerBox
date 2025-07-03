@@ -177,8 +177,8 @@ private fun SizeCard(
         ) {
             Text(
                 text = when (size) {
-                    LockerSize.SINGLE -> "${stringResource(Res.string.Small)}${stringResource(Res.string.one_helmet_and_one_coat)}"
-                    LockerSize.DOUBLE -> "${stringResource(Res.string.Medium)}${stringResource(Res.string.double_helmet_and_double_coat)}"
+                    LockerSize.SINGLE -> "${stringResource(Res.string.Small)}: ${stringResource(Res.string.one_helmet_and_one_coat)}"
+                    LockerSize.DOUBLE -> "${stringResource(Res.string.Medium)}: ${stringResource(Res.string.double_helmet_and_double_coat)}"
                 },
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold

@@ -21,6 +21,7 @@ import org.perso.bikerbox.ui.components.DetailRow
 import org.perso.bikerbox.ui.viewmodel.ReservationState
 import org.perso.bikerbox.ui.viewmodel.ReservationViewModel
 import org.perso.bikerbox.utils.formatDecimal
+import org.perso.bikerbox.utils.toFormattedString
 
 @Composable
 fun ConfirmationScreen(
@@ -79,7 +80,6 @@ fun ConfirmationScreen(
         }
 
         else -> {
-            // Default state
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator()
@@ -141,16 +141,16 @@ fun ConfirmationScreenContent(
                     if (isPreConfirmation) {
                         DetailRow(label = stringResource(Res.string.Locker), value = lockerName ?: "")
                         DetailRow(label = stringResource(Res.string.Size), value = size?.displayName ?: "")
-                        DetailRow(label = stringResource(Res.string.Start_Date), value = "$startDate")
-                        DetailRow(label = stringResource(Res.string.End_Date), value = "$endDate")
+                        DetailRow(label = stringResource(Res.string.Start_Date), value = startDate?.toFormattedString() ?: "")
+                        DetailRow(label = stringResource(Res.string.End_Date), value = endDate?.toFormattedString() ?: "")
                         DetailRow(label = stringResource(Res.string.Total_price), value = "${price?.formatDecimal(2)} €")
                     } else {
                         reservation.let {
                             DetailRow(label = stringResource(Res.string.Reservation_number), value = it.id)
                             DetailRow(label = stringResource(Res.string.Size), value = it.size.displayName)
-                            DetailRow(label = stringResource(Res.string.Start_Date), value = "${it.startDate}")
+                            DetailRow(label = stringResource(Res.string.Start_Date), value = it.startDate.toFormattedString())
                             DetailRow(label = stringResource(Res.string.End_Date), value = "${it.endDate}")
-                            DetailRow(label = stringResource(Res.string.Total_price), value = "${it.price.formatDecimal(2)} €")
+                            DetailRow(label = stringResource(Res.string.End_Date), value = it.endDate.toFormattedString())
 
                             Spacer(modifier = Modifier.height(16.dp))
 
