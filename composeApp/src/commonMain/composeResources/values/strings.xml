@@ -101,8 +101,9 @@
     <string name="Send_reset_link">Send reset link</string>
     <string name="Set_default_card">Set as default card</string>
     <string name="Size">Size</string>
-    <string name="Size_locker_double">100cm x 100cm x 80cm</string>
-    <string name="Size_locker_single">50cm x 50cm x 80cm</string>
+    <string name="Size_locker_large">150cm x 150cm x 80cm</string>
+    <string name="Size_locker_medium">100cm x 100cm x 80cm</string>
+    <string name="Size_locker_small">50cm x 50cm x 80cm</string>
     <string name="Small">Small</string>
     <string name="Start_Date">Start Date</string>
     <string name="Start_Time">Start Time</string>
