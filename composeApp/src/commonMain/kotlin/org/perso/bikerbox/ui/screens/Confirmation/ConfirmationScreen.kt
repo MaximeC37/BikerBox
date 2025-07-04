@@ -149,7 +149,6 @@ fun ConfirmationScreenContent(
                             DetailRow(label = stringResource(Res.string.Reservation_number), value = it.id)
                             DetailRow(label = stringResource(Res.string.Size), value = it.size.displayName)
                             DetailRow(label = stringResource(Res.string.Start_Date), value = it.startDate.toFormattedString())
-                            DetailRow(label = stringResource(Res.string.End_Date), value = "${it.endDate}")
                             DetailRow(label = stringResource(Res.string.End_Date), value = it.endDate.toFormattedString())
 
                             Spacer(modifier = Modifier.height(16.dp))
