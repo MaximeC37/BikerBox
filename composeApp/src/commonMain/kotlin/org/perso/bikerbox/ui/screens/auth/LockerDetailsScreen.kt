@@ -15,22 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import bikerbox.composeapp.generated.resources.Available
-import bikerbox.composeapp.generated.resources.Back
-import bikerbox.composeapp.generated.resources.Locker_Details
-import bikerbox.composeapp.generated.resources.Locker_not_found
-import bikerbox.composeapp.generated.resources.Medium
-import bikerbox.composeapp.generated.resources.Price
-import bikerbox.composeapp.generated.resources.Price_medium
-import bikerbox.composeapp.generated.resources.Price_small
-import bikerbox.composeapp.generated.resources.Res
-import bikerbox.composeapp.generated.resources.Select_locker_size
-import bikerbox.composeapp.generated.resources.Size
-import bikerbox.composeapp.generated.resources.Size_locker_double
-import bikerbox.composeapp.generated.resources.Size_locker_single
-import bikerbox.composeapp.generated.resources.Small
-import bikerbox.composeapp.generated.resources.double_helmet_and_double_coat
-import bikerbox.composeapp.generated.resources.one_helmet_and_one_coat
+import bikerbox.composeapp.generated.resources.*
+import bikerbox.composeapp.generated.resources.Size_locker_large
+import bikerbox.composeapp.generated.resources.Size_locker_medium
+import bikerbox.composeapp.generated.resources.Size_locker_small
 import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.LockerSize
 import org.perso.bikerbox.ui.viewmodel.ReservationViewModel
@@ -177,8 +165,9 @@ private fun SizeCard(
         ) {
             Text(
                 text = when (size) {
-                    LockerSize.SINGLE -> "${stringResource(Res.string.Small)}: ${stringResource(Res.string.one_helmet_and_one_coat)}"
-                    LockerSize.DOUBLE -> "${stringResource(Res.string.Medium)}: ${stringResource(Res.string.double_helmet_and_double_coat)}"
+                    LockerSize.SMALL -> "${stringResource(Res.string.Small)}: ${stringResource(Res.string.one_helmet_and_one_coat)}"
+                    LockerSize.MEDIUM -> "${stringResource(Res.string.Medium)}: ${stringResource(Res.string.double_helmet_and_double_coat)}"
+                    LockerSize.LARGE -> "${stringResource(Res.string.Large)}: ${stringResource(Res.string.double_helmet_and_double_coat)}"
                 },
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
@@ -189,8 +178,9 @@ private fun SizeCard(
             Text(
                 text = "${stringResource(Res.string.Size)}: ${
                     when (size) {
-                        LockerSize.SINGLE -> stringResource(Res.string.Size_locker_single)
-                        LockerSize.DOUBLE -> stringResource(Res.string.Size_locker_double)
+                        LockerSize.SMALL -> stringResource(Res.string.Size_locker_small)
+                        LockerSize.MEDIUM -> stringResource(Res.string.Size_locker_medium)
+                        LockerSize.LARGE -> stringResource(Res.string.Size_locker_large)
                     }
                 }",
                 style = MaterialTheme.typography.bodyMedium
@@ -201,8 +191,9 @@ private fun SizeCard(
             Text(
                 text = "${stringResource(Res.string.Price)}: ${
                     when (size) {
-                        LockerSize.SINGLE -> stringResource(Res.string.Price_small)
-                        LockerSize.DOUBLE -> stringResource(Res.string.Price_medium)
+                        LockerSize.SMALL -> stringResource(Res.string.Price_small)
+                        LockerSize.MEDIUM -> stringResource(Res.string.Price_medium)
+                        LockerSize.LARGE -> stringResource(Res.string.Price_large)
                     }
                 }",
                 style = MaterialTheme.typography.bodyMedium
