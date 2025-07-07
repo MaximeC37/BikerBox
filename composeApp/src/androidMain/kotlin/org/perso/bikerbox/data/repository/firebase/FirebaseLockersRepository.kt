@@ -340,12 +340,7 @@ class FirebaseLockersRepository : LockersRepository {
                 throw SecurityException("Cette réservation n'appartient pas à l'utilisateur courant")
             }
 
-            val updates = hashMapOf<String, Any>(
-                "status" to "CANCELLED",
-                "cancelledAt" to FieldValue.serverTimestamp()
-            )
-
-            reservationsCollection.document(reservationId).update(updates).await()
+            reservationsCollection.document(reservationId).delete().await()
         } catch (e: Exception) {
             e.printStackTrace()
             throw e
