@@ -2,7 +2,7 @@
 
 ## ⚠️ Project Status: Active Development
 This project is currently under development and not yet finalized. Some features may be incomplete or subject to change.
-Current version: Alpha 0.2
+Current version: Alpha 0.3
 
 ## About
 BikerBox is a personal mobile application project under development, designed for bikers. This application is a prototype/technical demonstrator developed for learning purposes and experimentation with Kotlin Multiplatform and Jetpack Compose. It simulates a secure locker management system allowing bikers to store their equipment (helmets, jackets, etc.).
@@ -14,22 +14,23 @@ BikerBox is a personal mobile application project under development, designed fo
 
 ## 🌟 Features
 
-### Recently Implemented ✅
-- **Complete localization system** with string resources
-- **Enhanced payment flow** with confirmation and booking management
-- **Multiple payment methods** support (Apple Pay, Google Pay, Visa, Mastercard, PayPal)
-- **Improved reservation system** with simplified navigation
-- **Enhanced pricing logic** for better accuracy
-- **Clean architecture** with unused components removal
-- **Better user interface** with consistent translations
+### Recently Implemented in v0.3 ✅
+- **Complete French localization** with comprehensive string resources
+- **Localized date and month names** for better user experience
+- **Enhanced locker size system** with standardized naming (Small, Medium, Large)
+- **Improved code maintainability** with obsolete component cleanup
+- **Refined reservation deletion logic** for better performance
+- **Enhanced date formatting** with consistent display across the app
+- **Optimized string resource management** with alphabetical organization
 
 ### Core Features ✅
 - Authentication system
 - Main user interface with improved navigation
 - Date selection with enhanced calendar interface
-- Reservation confirmation flow
+- Reservation confirmation flow with localized dates
 - Payment processing system
 - User reservation management
+- Complete bilingual support (English/French)
 
 ### In Development 🚧
 - Advanced user profile features
@@ -40,14 +41,15 @@ BikerBox is a personal mobile application project under development, designed fo
 - Offline mode
 - Administrator interface
 - Advanced analytics
+- Extended language support
 - Extended payment options
 
 ## 🔧 Technical Prerequisites
 
 - Android Studio Hedgehog | 2023.1.1 or newer
-- JDK 23
-- Kotlin 2.2.0
-- Android SDK 36 (compileSdk)
+- JDK 21
+- Kotlin 2.1
+- Android SDK 34 (compileSdk)
 - Gradle 8.14.2
 - AGP 8.11.0-alpha07
 - A Firebase account (for development)
@@ -56,7 +58,6 @@ BikerBox is a personal mobile application project under development, designed fo
 ## 📥 Installation
 
 ### 1. Clone the Repository
-
 
 bash git clone [https://github.com/votre-username/BikerBox.git](https://github.com/votre-username/BikerBox.git) cd BikerBox
 
@@ -84,10 +85,10 @@ Additional required steps:
 sdk.dir=CHEMIN_VERS_VOTRE_SDK_ANDROID
 ```
 
-## ⚡ Problèmes Connus
-- L'application peut être instable sur certains appareils
-- Certaines fonctionnalités sont simulées ou partiellement implémentées
-- Les performances peuvent ne pas être optimales pendant la phase de développement
+## ⚡ ## Known Issues
+- The application may be unstable on certain devices
+- Some features are simulated or partially implemented
+- Performance may not be optimal during the development phase
 
 ## 🚀 Build and Run
 ### Android
@@ -117,11 +118,13 @@ This personal project follows the MVVM (Model-View-ViewModel) architecture and i
 - **Lifecycle 2.9.1** - For lifecycle management
 
 ## 🌍 Localization
-The app now features a complete localization system:
+The app now features a complete bilingual localization system:
+- **Complete French translation** with proper locale handling
+- **Localized date and month names** for natural language display
 - All UI text is externalized to string resources
-- Consistent English translation throughout the application
+- Alphabetically organized string resources for better maintainability
 - Easy to extend for additional languages
-- Improved maintainability and translation management
+- Consistent translation management across the application
 
 ## 💳 Payment Integration
 Supports multiple payment methods with visual branding:
@@ -132,8 +135,10 @@ Supports multiple payment methods with visual branding:
 - PayPal
 
 ## 📈 Recent Updates
-- **v0.2**: Complete UI localization, enhanced payment flow, improved reservation system
-- **v0.1**: Initial release with basic authentication and navigation
+- **v0.3**: Complete French localization, localized date formatting, enhanced locker size system, code cleanup and optimization
+- **v0.2**: Complete UI localization, enhanced payment flow, improved reservation system 
+- **v0.1**: Initial release with basic authentication and navigation 
+
 
 ## 🎯 Project Goals
 This personal project was developed with the aim of:
