@@ -1,21 +1,29 @@
 package org.perso.bikerbox.ui.viewmodel
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
+import org.perso.bikerbox.data.location.LocationProvider
 import org.perso.bikerbox.data.models.*
-import org.perso.bikerbox.domain.usecases.*
+import org.perso.bikerbox.domain.usecases.CancelReservationUseCase
+import org.perso.bikerbox.domain.usecases.GetAvailableLockersUseCase
+import org.perso.bikerbox.domain.usecases.GetUserReservationsUseCase
+import org.perso.bikerbox.domain.usecases.MakeReservationUseCase
+
 
 class ReservationViewModel(
     private val getAvailableLockersUseCase: GetAvailableLockersUseCase,
     private val makeReservationUseCase: MakeReservationUseCase,
     private val getUserReservationsUseCase: GetUserReservationsUseCase,
-    private val cancelReservationUseCase: CancelReservationUseCase
+    private val cancelReservationUseCase: CancelReservationUseCase,
+    private val locationProvider: LocationProvider
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<ReservationState>(ReservationState.Loading)
@@ -29,6 +37,9 @@ class ReservationViewModel(
 
     private val _availableLockers = MutableStateFlow<List<Locker>>(emptyList())
     val availableLockers: StateFlow<List<Locker>> = _availableLockers.asStateFlow()
+
+    private val _userLocation = MutableStateFlow<Location?>(null)
+    val userLocation: StateFlow<Location?> = _userLocation.asStateFlow()
 
     private var selectedLockerId: String? = null
     private var selectedLockerName: String? = null
@@ -45,6 +56,7 @@ class ReservationViewModel(
     private fun loadLockers() {
         viewModelScope.launch {
             try {
+                _state.value = ReservationState.Loading
                 val lockers = getAvailableLockersUseCase()
                 _availableLockers.value = lockers
                 _state.value = ReservationState.LockerSelection(lockers)
@@ -53,6 +65,19 @@ class ReservationViewModel(
                 Log.e("ReservationViewModel", "Error loading lockers: ${e.message}")
                 _state.value = ReservationState.Error("Error loading lockers")
             }
+        }
+    }
+
+    fun startLocationUpdates() {
+        viewModelScope.launch {
+            locationProvider.getUserLocationFlow()
+                .catch { e ->
+                    Log.e("ReservationViewModel", "Location updates failed", e)
+                    _uiMessage.value = "Impossible d'obtenir la localisation."
+                }
+                .collect { location ->
+                    _userLocation.value = location
+                }
         }
     }
 
@@ -122,21 +147,16 @@ class ReservationViewModel(
     }
 
     fun loadUserReservations() {
-
         viewModelScope.launch {
             try {
                 _userReservations.value = Resource.Loading
-
                 val reservations = getUserReservationsUseCase()
-
                 _userReservations.value = Resource.Success(reservations)
-
             } catch (e: Exception) {
                 _userReservations.value = Resource.Error("Error loading: ${e.message}")
             }
         }
     }
-
     fun cancelReservation(reservationId: String) {
 
         viewModelScope.launch {
@@ -166,6 +186,7 @@ class ReservationViewModel(
         price: Double
     ) {
         selectedLockerId = lockerId
+        selectedLockerName = getLockerById(lockerId)?.name ?: "Unknown locker"
         selectedSize = size
         selectedStartDate = startDate
         selectedEndDate = endDate
@@ -173,7 +194,7 @@ class ReservationViewModel(
 
         _state.value = ReservationState.ConfirmationNeeded(
             lockerId = lockerId,
-            lockerName = getLockerById(lockerId)?.name ?: "Unknown locker",
+            lockerName = selectedLockerName!!,
             size = size,
             startDate = startDate,
             endDate = endDate,

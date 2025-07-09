@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -45,6 +47,8 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.maps.compose)
+
 
             api(project.dependencies.platform("com.google.firebase:firebase-bom:32.7.0"))
             implementation("com.google.firebase:firebase-auth-ktx")
@@ -54,6 +58,9 @@ kotlin {
 
             implementation("com.benasher44:uuid:0.6.0")
             implementation(kotlin("stdlib-jdk8"))
+
+            implementation(libs.play.services.location)
+            implementation(libs.accompanist.permissions)
 
         }
 
@@ -78,13 +85,33 @@ android {
     namespace = "org.perso.bikerbox"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    val localProperties = Properties()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localProperties.load(FileInputStream(localPropertiesFile))
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "org.perso.bikerbox"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
+
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -112,7 +139,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     debugImplementation(compose.uiTooling)
 
-    // Coil pour le chargement des images
     implementation ("io.coil-kt:coil-compose:2.5.0")
 }
 

@@ -2,7 +2,7 @@
 
 ## ⚠️ Project Status: Active Development
 This project is currently under development and not yet finalized. Some features may be incomplete or subject to change.
-Current version: Alpha 0.3
+Current version: Alpha 0.4
 
 ## About
 BikerBox is a personal mobile application project under development, designed for bikers. This application is a prototype/technical demonstrator developed for learning purposes and experimentation with Kotlin Multiplatform and Jetpack Compose. It simulates a secure locker management system allowing bikers to store their equipment (helmets, jackets, etc.).
@@ -14,18 +14,16 @@ BikerBox is a personal mobile application project under development, designed fo
 
 ## 🌟 Features
 
-### Recently Implemented in v0.3 ✅
-- **Complete French localization** with comprehensive string resources
-- **Localized date and month names** for better user experience
-- **Enhanced locker size system** with standardized naming (Small, Medium, Large)
-- **Improved code maintainability** with obsolete component cleanup
-- **Refined reservation deletion logic** for better performance
-- **Enhanced date formatting** with consistent display across the app
-- **Optimized string resource management** with alphabetical organization
+### Recently Implemented in v0.4 ✅
+- **Map Integration**: Integrated Google Maps to display station locations.
+- **Real-Time Station Markers**: Added real-time display of BikerBox station markers on the map, fetched directly from Firebase.
+- **Location Permissions**: Configured necessary location permissions (`ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION`) for geolocation features.
+- **Expanded Localization**: Added new string resources for map and permission features, maintaining a fully sorted and organized file structure.
 
 ### Core Features ✅
 - Authentication system
 - Main user interface with improved navigation
+- **Map view with real-time station markers**
 - Date selection with enhanced calendar interface
 - Reservation confirmation flow with localized dates
 - Payment processing system
@@ -33,6 +31,7 @@ BikerBox is a personal mobile application project under development, designed fo
 - Complete bilingual support (English/French)
 
 ### In Development 🚧
+- **Runtime permission handling for location**
 - Advanced user profile features
 - Notification system enhancements
 - Performance optimizations
@@ -61,34 +60,34 @@ BikerBox is a personal mobile application project under development, designed fo
 
 bash git clone [https://github.com/votre-username/BikerBox.git](https://github.com/votre-username/BikerBox.git) cd BikerBox
 
-### 2. Firebase Configuration
+### 2. Configure API Keys and Services
 
-1. Create a project in the [Firebase Console](https://console.firebase.google.com/)
-2. Add an Android application with the package `org.perso.bikerbox`
-3. Download the `google-services.json` file
-4. Place it in the `composeApp/` folder
+1.  **Firebase**:
+    *   Create a project in the [Firebase Console](https://console.firebase.google.com/).
+    *   Add an Android application with the package name `org.perso.bikerbox`.
+    *   Download the `google-services.json` file and place it in the `composeApp/` directory.
+    *   Enable **Authentication** (Email/Password) and the **Firestore Database**.
 
-Note: A `google-services.json.example` file is provided in the repository as a structure example. **Do not use it in production.**
+2.  **Google Maps**:
+    *   In the [Google Cloud Console](https://console.cloud.google.com/), ensure the **Maps SDK for Android** is enabled for your project.
+    *   Get your **Google Maps API Key**.
 
-Additional required steps:
-- Enable Authentication (Email/Password)
-- Configure Firestore Database
-- Configure Storage if necessary
+### 3. Configure Local Properties
 
-### 3. Project Configuration
+1.  Open the `local.properties` file at the project root (create it if it doesn't exist).
+2.  Add your Google Maps API key to this file. **This file is ignored by Git and keeps your key secure.**
 
-1. Open the project in Android Studio
-2. Sync the project with Gradle
-3. Verify that all dependencies are downloaded
-4. Configure your `local.properties` file with:
-```properties
-sdk.dir=CHEMIN_VERS_VOTRE_SDK_ANDROID
-```
+    ```properties
+    # local.properties (This file should NOT be committed to Git)
+    MAPS_API_KEY="YOUR_GOOGLE_MAPS_API_KEY_HERE"
+    ```
 
-## ⚡ ## Known Issues
-- The application may be unstable on certain devices
-- Some features are simulated or partially implemented
-- Performance may not be optimal during the development phase
+3.  Sync the project with Gradle in Android Studio.
+
+## ⚡ Known Issues
+- The application may be unstable on certain devices.
+- Some features are simulated or partially implemented.
+- Performance may not be optimal during the development phase.
 
 ## 🚀 Build and Run
 ### Android
@@ -111,10 +110,10 @@ This personal project follows the MVVM (Model-View-ViewModel) architecture and i
 ## 🛠 Technologies Used
 - **Kotlin Multiplatform 2.2.0** - For code sharing between platforms
 - **Compose Multiplatform 1.8.2** - For user interface
-- **Firebase** - For authentication and data storage
+- **Firebase** - For authentication and real-time database
+- **Google Maps SDK for Android** - For map display and interaction
 - **Koin** - For dependency injection
-- **Kotlin Coroutines** - For asynchronous programming
-- **Kotlin Flow** - For reactive programming
+- **Kotlin Coroutines & Flow** - For asynchronous programming
 - **Lifecycle 2.9.1** - For lifecycle management
 
 ## 🌍 Localization
@@ -135,10 +134,10 @@ Supports multiple payment methods with visual branding:
 - PayPal
 
 ## 📈 Recent Updates
-- **v0.3**: Complete French localization, localized date formatting, enhanced locker size system, code cleanup and optimization
-- **v0.2**: Complete UI localization, enhanced payment flow, improved reservation system 
-- **v0.1**: Initial release with basic authentication and navigation 
-
+- **v0.4**: Integrated Google Maps with real-time station markers, configured location permissions, and expanded localization resources.
+- **v0.3**: Complete French localization, localized date formatting, enhanced locker size system, code cleanup and optimization.
+- **v0.2**: Complete UI localization, enhanced payment flow, improved reservation system.
+- **v0.1**: Initial release with basic authentication and navigation.
 
 ## 🎯 Project Goals
 This personal project was developed with the aim of:
