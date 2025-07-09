@@ -68,6 +68,8 @@ class FirebaseLockersRepository : LockersRepository {
 
                     val name = doc.getString("name")
                     val location = doc.getString("location")
+                    val latitude = doc.getDouble("latitude") ?: 0.0
+                    val longitude = doc.getDouble("longitude") ?: 0.0
 
                     if (name == null || location == null) {
                         return@mapNotNull null
@@ -78,7 +80,9 @@ class FirebaseLockersRepository : LockersRepository {
                         name = name,
                         location = location,
                         availableSizes = sizes,
-                        availableCount = availableCount
+                        availableCount = availableCount,
+                        latitude = latitude,
+                        longitude = longitude
                     )
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -109,6 +113,8 @@ class FirebaseLockersRepository : LockersRepository {
             val availableCountRaw = document.get("availableCount") as? Map<*, *>
             val name = document.getString("name")
             val location = document.getString("location")
+            val latitude = document.getDouble("latitude") ?: 0.0
+            val longitude = document.getDouble("longitude") ?: 0.0
 
             if (sizesRaw == null || availableCountRaw == null || name == null || location == null) {
                 return null
@@ -143,7 +149,9 @@ class FirebaseLockersRepository : LockersRepository {
                 name = name,
                 location = location,
                 availableSizes = sizes,
-                availableCount = availableCount
+                availableCount = availableCount,
+                latitude = latitude,
+                longitude = longitude
             )
         } catch (e: Exception) {
             e.printStackTrace()
@@ -351,23 +359,12 @@ class FirebaseLockersRepository : LockersRepository {
         return listOf(
             Locker(
                 id = "fallback1",
-                name = "Casier Gare (Secours)",
-                location = "Gare Centrale",
+                name = "Locker de secours A",
+                location = "Paris Centre",
                 availableSizes = listOf(LockerSize.SMALL, LockerSize.MEDIUM),
-                availableCount = mutableMapOf(
-                    LockerSize.SMALL to 5,
-                    LockerSize.MEDIUM to 3
-                )
-            ),
-            Locker(
-                id = "fallback2",
-                name = "Casier Centre (Secours)",
-                location = "Centre Commercial",
-                availableSizes = listOf(LockerSize.SMALL, LockerSize.MEDIUM),
-                availableCount = mutableMapOf(
-                    LockerSize.SMALL to 8,
-                    LockerSize.MEDIUM to 4
-                )
+                availableCount = mutableMapOf(LockerSize.SMALL to 5, LockerSize.MEDIUM to 3),
+                latitude = 48.8566,
+                longitude = 2.3522
             )
         )
     }
