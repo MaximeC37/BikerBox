@@ -43,6 +43,7 @@ fun HomeScreen(
     val authState by authViewModel.authState.collectAsState()
     val currentUser = if (authState is Resource.Success) (authState as Resource.Success).data else null
     val state by viewModel.state.collectAsState()
+    val selectedLockerForDetails by viewModel.selectedLockerDetails.collectAsState()
 
     var showMenu by remember { mutableStateOf(false) }
 
@@ -69,23 +70,11 @@ fun HomeScreen(
                                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                                 )
                             }
+                            DropdownMenuItem(onClick = { onNavigateToProfile(); showMenu = false }, text = { Text(stringResource(Res.string.My_Profil)) })
                             DropdownMenuItem(
-                                onClick = {
-                                    onNavigateToProfile()
-                                    showMenu = false
-                                },
-                                text = { Text(stringResource(Res.string.My_Profil)) }
-                            )
-                            DropdownMenuItem(
-                                onClick = {
-                                    onSignOut()
-                                    showMenu = false
-                                },
+                                onClick = { onSignOut(); showMenu = false },
                                 text = {
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                                         Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
                                         Text(stringResource(Res.string.Log_out))
                                     }
@@ -99,53 +88,45 @@ fun HomeScreen(
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             when (val currentState = state) {
-                is ReservationState.Loading -> {
-                    LoadingState()
-                }
-                is ReservationState.Error -> {
-                    ErrorState(message = currentState.message)
-                }
+                is ReservationState.Loading -> LoadingState()
+                is ReservationState.Error -> ErrorState(message = currentState.message)
                 is ReservationState.LockerSelection -> {
-                    LockerSelectionTabs(
-                        lockers = currentState.lockers,
-                        onSelectLocker = onSelectLocker,
-                        viewModel = viewModel
-                    )
+                    LockerSelectionTabs(lockers = currentState.lockers, viewModel = viewModel)
                 }
-                else -> {
-                    LoadingState()
-                }
+                else -> LoadingState()
             }
         }
+    }
+
+    selectedLockerForDetails?.let { locker ->
+        LockerDetailsBottomSheet(
+            locker = locker,
+            onDismiss = { viewModel.dismissLockerDetails() },
+            onReserveClick = {
+                viewModel.startReservationFromDetails()
+                onSelectLocker(locker.id)
+            }
+        )
     }
 }
 
 @Composable
 private fun LockerSelectionTabs(
     lockers: List<Locker>,
-    onSelectLocker: (String) -> Unit,
     viewModel: ReservationViewModel
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val tabs = listOf(
-        stringResource(Res.string.List),
-        stringResource(Res.string.Map)
-    )
+    val tabs = listOf(stringResource(Res.string.List), stringResource(Res.string.Map))
 
     Column {
         TabRow(selectedTabIndex = selectedTabIndex) {
             tabs.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
-                    text = { Text(title) }
-                )
+                Tab(selected = selectedTabIndex == index, onClick = { selectedTabIndex = index }, text = { Text(title) })
             }
         }
-
         when (selectedTabIndex) {
-            0 -> LockerList(lockers = lockers, onSelectLocker = onSelectLocker, viewModel = viewModel)
-            1 -> LockerMap(lockers = lockers, onSelectLocker = onSelectLocker, viewModel = viewModel)
+            0 -> LockerList(lockers = lockers, viewModel = viewModel)
+            1 -> LockerMap(lockers = lockers, viewModel = viewModel)
         }
     }
 }
@@ -153,33 +134,22 @@ private fun LockerSelectionTabs(
 @Composable
 private fun LockerList(
     lockers: List<Locker>,
-    onSelectLocker: (String) -> Unit,
     viewModel: ReservationViewModel
 ) {
     if (lockers.isNotEmpty()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Text(
                 text = stringResource(Res.string.Lockers_available),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            LazyVerticalGrid(columns = GridCells.Fixed(2), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(lockers) { locker ->
                     LockerCard(
                         locker = locker,
                         onClick = {
                             viewModel.selectLocker(locker)
-                            onSelectLocker(locker.id)
                         }
                     )
                 }
@@ -194,63 +164,44 @@ private fun LockerList(
 @Composable
 private fun LockerMap(
     lockers: List<Locker>,
-    onSelectLocker: (String) -> Unit,
     viewModel: ReservationViewModel
 ) {
-    val locationPermissionState = rememberPermissionState(
-        Manifest.permission.ACCESS_FINE_LOCATION
-    )
-
+    val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     if (locationPermissionState.status.isGranted) {
-        LaunchedEffect(Unit) {
-            viewModel.startLocationUpdates()
-        }
+        LaunchedEffect(Unit) { viewModel.startLocationUpdates() }
     }
 
     if (locationPermissionState.status.isGranted) {
         val userLocation by viewModel.userLocation.collectAsState()
-
-        val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(LatLng(48.8566, 2.3522), 10f)
-        }
-
+        val cameraPositionState = rememberCameraPositionState { position = CameraPosition.fromLatLngZoom(LatLng(48.8566, 2.3522), 10f) }
         var hasCenteredOnUser by remember { mutableStateOf(false) }
 
         LaunchedEffect(userLocation) {
             if (userLocation != null && !hasCenteredOnUser) {
                 val userLatLng = LatLng(userLocation!!.latitude, userLocation!!.longitude)
-                cameraPositionState.animate(
-                    update = CameraUpdateFactory.newLatLngZoom(userLatLng, 15f),
-                    durationMs = 1500 // Animation douce
-                )
+                cameraPositionState.animate(update = CameraUpdateFactory.newLatLngZoom(userLatLng, 15f), durationMs = 1500)
                 hasCenteredOnUser = true
             }
         }
 
         val mapProperties = MapProperties(isMyLocationEnabled = true)
 
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState,
-            properties = mapProperties
-        ) {
+        GoogleMap(modifier = Modifier.fillMaxSize(), cameraPositionState = cameraPositionState, properties = mapProperties) {
             lockers.forEach { locker ->
                 Marker(
                     state = rememberMarkerState(position = LatLng(locker.latitude, locker.longitude)),
                     title = locker.name,
                     snippet = "Cliquez pour voir les détails",
-                    onInfoWindowClick = {
-                        onSelectLocker(locker.id)
+                    onClick = {
+                        viewModel.selectLocker(locker)
+                        true
                     }
                 )
             }
         }
-
     } else {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -267,14 +218,8 @@ private fun LockerMap(
 
 @Composable
 private fun LoadingState() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             CircularProgressIndicator()
             Spacer(modifier = Modifier.height(16.dp))
             Text("Loading...")
@@ -284,47 +229,25 @@ private fun LoadingState() {
 
 @Composable
 private fun ErrorState(message: String) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text("${stringResource(Res.string.Error)}: $message")
     }
 }
 
 @Composable
 private fun EmptyState() {
-    Box(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = stringResource(Res.string.No_lockers_available),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
-        )
+    Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
+        Text(text = stringResource(Res.string.No_lockers_available), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
 fun LockerCard(locker: Locker, onClick: () -> Unit) {
-    Card(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = locker.name,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
+    Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = locker.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = locker.location,
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Text(text = locker.location, style = MaterialTheme.typography.bodyMedium)
         }
     }
 }

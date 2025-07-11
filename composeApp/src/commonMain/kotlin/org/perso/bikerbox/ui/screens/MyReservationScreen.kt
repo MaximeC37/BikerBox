@@ -15,6 +15,7 @@ import bikerbox.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.perso.bikerbox.data.models.Reservation
 import org.perso.bikerbox.data.models.Resource
+import org.perso.bikerbox.data.models.displayName
 import org.perso.bikerbox.ui.viewmodel.ReservationViewModel
 import org.perso.bikerbox.utils.formatDecimal
 
@@ -196,10 +197,16 @@ fun ReservationCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "${stringResource(Res.string.Size)}: ${reservation.size.name}",
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Row {
+                Text(
+                    text = "${stringResource(Res.string.Size)}: ",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = reservation.size.displayName,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
             // Dates
             Text(
