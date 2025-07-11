@@ -41,6 +41,10 @@ class ReservationViewModel(
     private val _userLocation = MutableStateFlow<Location?>(null)
     val userLocation: StateFlow<Location?> = _userLocation.asStateFlow()
 
+    // NOUVEAU: État pour le panneau de détails
+    private val _selectedLockerDetails = MutableStateFlow<Locker?>(null)
+    val selectedLockerDetails: StateFlow<Locker?> = _selectedLockerDetails.asStateFlow()
+
     private var selectedLockerId: String? = null
     private var selectedLockerName: String? = null
     private var selectedSize: LockerSize? = null
@@ -82,10 +86,21 @@ class ReservationViewModel(
     }
 
     fun selectLocker(locker: Locker) {
+        Log.d("ReservationViewModel", "Showing details for: ${locker.name}")
+        _selectedLockerDetails.value = locker
+    }
+
+    fun startReservationFromDetails() {
+        val locker = _selectedLockerDetails.value ?: return
         Log.d("ReservationViewModel", "Locker selected: ${locker.name}")
         selectedLockerId = locker.id
         selectedLockerName = locker.name
         _state.value = ReservationState.SizeSelection(locker)
+        dismissLockerDetails() // Ferme le panneau
+    }
+
+    fun dismissLockerDetails() {
+        _selectedLockerDetails.value = null
     }
 
     fun selectSize(size: LockerSize) {
@@ -104,41 +119,32 @@ class ReservationViewModel(
             _state.value = ReservationState.Error("Error: Locker not selected")
             return
         }
-
         val size = selectedSize ?: run {
             _state.value = ReservationState.Error("Error: size not selected")
             return
         }
-
         val startDate = selectedStartDate ?: run {
             _state.value = ReservationState.Error("Error: Missing start date")
             return
         }
-
         val endDate = selectedEndDate ?: run {
             _state.value = ReservationState.Error("Error: Missing end date")
             return
         }
 
-
         viewModelScope.launch {
             try {
                 _state.value = ReservationState.Loading
-
                 val reservation = makeReservationUseCase(
                     lockerId = lockerId,
                     size = size,
                     startDate = startDate,
                     endDate = endDate
                 )
-
                 loadUserReservations()
-
                 _state.value = ReservationState.Success(reservation)
                 _uiMessage.value = "Reservation successfully confirmed!"
-
                 clearAllVariables()
-
             } catch (e: Exception) {
                 _state.value = ReservationState.Error("Error while booking: ${e.message}")
                 _uiMessage.value = "Erreur: ${e.message}"
@@ -158,7 +164,6 @@ class ReservationViewModel(
         }
     }
     fun cancelReservation(reservationId: String) {
-
         viewModelScope.launch {
             try {
                 cancelReservationUseCase(reservationId)
