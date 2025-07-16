@@ -1,6 +1,6 @@
 package org.perso.bikerbox.data.repository.firebase
 
-import android.net.Uri
+import androidx.core.net.toUri
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -8,18 +8,17 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.flow.Flow
 import org.perso.bikerbox.data.models.Resource
 import org.perso.bikerbox.data.models.User
 import org.perso.bikerbox.data.repository.AuthRepository
-import androidx.core.net.toUri
 
 class FirebaseAuthRepository : AuthRepository {
-    private val auth = Firebase.auth
-    private val firestore = Firebase.firestore
-    private val usersCollection = firestore.collection("users")
+    private val auth by lazy { Firebase.auth }
+    private val firestore by lazy { Firebase.firestore }
+    private val usersCollection by lazy { firestore.collection("users") }
 
 
 

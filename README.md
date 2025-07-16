@@ -2,7 +2,7 @@
 
 ## ⚠️ Project Status: Active Development
 This project is currently under development and not yet finalized. Some features may be incomplete or subject to change.
-Current version: Alpha 0.4
+Current version: Alpha 0.5
 
 ## About
 BikerBox is a personal mobile application project under development, designed for bikers. This application is a prototype/technical demonstrator developed for learning purposes and experimentation with Kotlin Multiplatform and Jetpack Compose. It simulates a secure locker management system allowing bikers to store their equipment (helmets, jackets, etc.).
@@ -14,11 +14,12 @@ BikerBox is a personal mobile application project under development, designed fo
 
 ## 🌟 Features
 
-### Recently Implemented in v0.4 ✅
-- **Map Integration**: Integrated Google Maps to display station locations.
-- **Real-Time Station Markers**: Added real-time display of BikerBox station markers on the map, fetched directly from Firebase.
-- **Location Permissions**: Configured necessary location permissions (`ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION`) for geolocation features.
-- **Expanded Localization**: Added new string resources for map and permission features, maintaining a fully sorted and organized file structure.
+### Recently Implemented in v0.5 ✅
+- **OpenStreetMap Integration**: Migrated from Google Maps to MapLibre/OpenStreetMap for better open-source compliance and flexibility.
+- **Multiple Map Styles**: Added support for multiple map styles (Standard, Dark, Light, Minimal, Detailed) with seamless switching.
+- **Enhanced Map UI**: Improved map interface with style selector and better performance optimization.
+- **Dependency Optimization**: Removed Google Maps dependency and integrated lightweight MapLibre solution.
+- **Improved Architecture**: Enhanced Firebase initialization with lazy loading and better resource management.
 
 ### Core Features ✅
 - Authentication system
@@ -37,6 +38,9 @@ BikerBox is a personal mobile application project under development, designed fo
 - Performance optimizations
 
 ### Planned 📋
+- **Map filters by distance and availability**
+- **GPS navigation to nearest station**
+- **Traffic indicators and estimated travel time**
 - Offline mode
 - Administrator interface
 - Advanced analytics
@@ -60,34 +64,21 @@ BikerBox is a personal mobile application project under development, designed fo
 
 bash git clone [https://github.com/votre-username/BikerBox.git](https://github.com/votre-username/BikerBox.git) cd BikerBox
 
-### 2. Configure API Keys and Services
+### 2. Configure Firebase
+1. **Firebase**:
+    - Create a project in the [Firebase Console](https://console.firebase.google.com/).
+    - Add an Android application with the package name `org.perso.bikerbox`.
+    - Download the `google-services.json` file and place it in the `composeApp/` directory.
+    - Enable **Authentication** (Email/Password) and the **Firestore Database**.
 
-1.  **Firebase**:
-    *   Create a project in the [Firebase Console](https://console.firebase.google.com/).
-    *   Add an Android application with the package name `org.perso.bikerbox`.
-    *   Download the `google-services.json` file and place it in the `composeApp/` directory.
-    *   Enable **Authentication** (Email/Password) and the **Firestore Database**.
-
-2.  **Google Maps**:
-    *   In the [Google Cloud Console](https://console.cloud.google.com/), ensure the **Maps SDK for Android** is enabled for your project.
-    *   Get your **Google Maps API Key**.
-
-### 3. Configure Local Properties
-
-1.  Open the `local.properties` file at the project root (create it if it doesn't exist).
-2.  Add your Google Maps API key to this file. **This file is ignored by Git and keeps your key secure.**
-
-    ```properties
-    # local.properties (This file should NOT be committed to Git)
-    MAPS_API_KEY="YOUR_GOOGLE_MAPS_API_KEY_HERE"
-    ```
-
-3.  Sync the project with Gradle in Android Studio.
+2. Sync the project with Gradle in Android Studio.
 
 ## ⚡ Known Issues
 - The application may be unstable on certain devices.
 - Some features are simulated or partially implemented.
 - Performance may not be optimal during the development phase.
+- Map style switching may require brief loading time.
+- OpenStreetMap tiles loading depends on internet connection quality.
 
 ## 🚀 Build and Run
 ### Android
@@ -108,10 +99,11 @@ This personal project follows the MVVM (Model-View-ViewModel) architecture and i
 - **utils**: Utilities and extensions
 
 ## 🛠 Technologies Used
-- **Kotlin Multiplatform 2.2.0** - For code sharing between platforms
+- - **Kotlin Multiplatform 2.2.0** - For code sharing between platforms
 - **Compose Multiplatform 1.8.2** - For user interface
 - **Firebase** - For authentication and real-time database
-- **Google Maps SDK for Android** - For map display and interaction
+- **MapLibre Android SDK 11.0.0** - For map display and interaction
+- **OpenStreetMap** - For map data and tiles
 - **Koin** - For dependency injection
 - **Kotlin Coroutines & Flow** - For asynchronous programming
 - **Lifecycle 2.9.1** - For lifecycle management
@@ -134,6 +126,7 @@ Supports multiple payment methods with visual branding:
 - PayPal
 
 ## 📈 Recent Updates
+- **v0.5**: Migrated to OpenStreetMap/MapLibre, added multiple map styles, improved open-source compliance and performance.
 - **v0.4**: Integrated Google Maps with real-time station markers, configured location permissions, and expanded localization resources.
 - **v0.3**: Complete French localization, localized date formatting, enhanced locker size system, code cleanup and optimization.
 - **v0.2**: Complete UI localization, enhanced payment flow, improved reservation system.

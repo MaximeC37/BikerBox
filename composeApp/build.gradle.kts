@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    id ("com.google.gms.google-services")
+    id("com.google.gms.google-services")
 }
 
 kotlin {
@@ -47,7 +47,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.maps.compose)
+            implementation("org.maplibre.gl:android-sdk:11.0.0")
 
 
             api(project.dependencies.platform("com.google.firebase:firebase-bom:32.7.0"))
@@ -107,9 +107,6 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
-
-        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
     packaging {
@@ -138,6 +135,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.android)
     implementation(libs.androidx.constraintlayout)
     debugImplementation(compose.uiTooling)
+    implementation("org.maplibre.gl:android-plugin-annotation-v9:3.0.0")
 
     implementation ("io.coil-kt:coil-compose:2.5.0")
 }

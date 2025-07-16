@@ -17,10 +17,11 @@ import java.time.ZoneId
 import java.util.*
 
 class FirebaseLockersRepository : LockersRepository {
-    private val firestore = FirebaseFirestore.getInstance()
-    private val auth = FirebaseAuth.getInstance()
-    private val lockersCollection = firestore.collection("lockers")
-    private val reservationsCollection = firestore.collection("reservations")
+    private val firestore by lazy { FirebaseFirestore.getInstance() }
+    private val auth by lazy { FirebaseAuth.getInstance() }
+    private val lockersCollection by lazy { firestore.collection("lockers") }
+    private val reservationsCollection by lazy { firestore.collection("reservations") }
+
 
     override suspend fun getAvailableLockers(): List<Locker> {
         return try {

@@ -179,7 +179,7 @@ fun ReservationCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "${stringResource(Res.string.Locker)} #${reservation.lockerId}",
+                    text = "${stringResource(Res.string.Locker)} ${reservation.lockerName}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
