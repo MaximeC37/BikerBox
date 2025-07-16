@@ -18,8 +18,10 @@
     <string name="Cancel">Cancel</string>
     <string name="Cardholder_Name">Cardholder Name</string>
     <string name="Card_number">Card Number</string>
+    <string name="Change_map_style">Change map style</string>
     <string name="Choose">Choose</string>
     <string name="Choose_a_date">Choose a date</string>
+    <string name="Close">Close</string>
     <string name="Code">Code</string>
     <string name="Confirm">Confirm</string>
     <string name="Confirm_Cancellation">Confirm Cancellation</string>
@@ -63,6 +65,7 @@
     <string name="Large">Large</string>
     <string name="List">List</string>
     <string name="Loading">Loading</string>
+    <string name="Location_in_progress">Location in progress...</string>
     <string name="Loading_longer">Loading longer than expected?</string>
     <string name="Loading_reservation_details">Loading reservation details...</string>
     <string name="Loading_your_reservations">Loading your reservations...</string>
@@ -82,6 +85,7 @@
     <string name="Log_out">Log out</string>
     <string name="march">March</string>
     <string name="Map">Map</string>
+    <string name="Map_style">Map style</string>
     <string name="may">May</string>
     <string name="Medium">Medium</string>
     <string name="Method">Method</string>
@@ -98,6 +102,11 @@
     <string name="one_helmet_and_one_coat">1 helmet + 1 coat</string>
     <string name="Other_methods">Other methods</string>
     <string name="Open_settings">Open Settings</string>
+    <string name="openstreetmap_style_url_standard">https://demotiles.maplibre.org/style.json</string>
+    <string name="openstreetmap_style_url_sombre">https://tiles.openfreemap.org/styles/dark</string>
+    <string name="openstreetmap_style_url_clair">https://tiles.openfreemap.org/styles/bright</string>
+    <string name="openstreetmap_style_url_minimal">https://tiles.openfreemap.org/styles/positron</string>
+    <string name="openstreetmap_style_url_detaille">https://tiles.openfreemap.org/styles/liberty</string>
     <string name="Password">Password</string>
     <string name="Password_Reset">Password Reset</string>
     <string name="Passwords_do_not_match">Passwords do not match</string>
@@ -113,6 +122,7 @@
     <string name="Price_small">6€/day</string>
     <string name="Proceed_to_payment">Proceed to payment</string>
     <string name="Processing_payment">Processing payment...</string>
+    <string name="Profile">Profil</string>
     <string name="Profile_successfully_updated">Profile successfully updated</string>
     <string name="Rationale_message">Location access is needed to show stations on the map. Without it, we can\'t help you find a locker.</string>
     <string name="Refresh">Refresh</string>

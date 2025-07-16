@@ -1,34 +1,54 @@
 package org.perso.bikerbox.ui.screens
 
 import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.os.Bundle
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import bikerbox.composeapp.generated.resources.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.*
 import org.jetbrains.compose.resources.stringResource
+import org.maplibre.android.location.LocationComponent
+import org.maplibre.android.location.LocationComponentActivationOptions
+import org.maplibre.android.location.modes.CameraMode
+import org.maplibre.android.location.modes.RenderMode
+import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.maps.MapView
 import org.perso.bikerbox.data.models.Locker
 import org.perso.bikerbox.data.models.Resource
+import org.perso.bikerbox.ui.components.LockerDetailsBottomSheet
 import org.perso.bikerbox.ui.viewmodel.AuthViewModel
 import org.perso.bikerbox.ui.viewmodel.ReservationState
 import org.perso.bikerbox.ui.viewmodel.ReservationViewModel
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.toColorInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +77,7 @@ fun HomeScreen(
                     }
                     Box {
                         IconButton(onClick = { showMenu = true }) {
-                            Icon(Icons.Default.AccountCircle, contentDescription = "Profil")
+                            Icon(Icons.Default.AccountCircle, contentDescription = stringResource(Res.string.Profile))
                         }
                         DropdownMenu(
                             expanded = showMenu,
@@ -166,54 +186,311 @@ private fun LockerMap(
     lockers: List<Locker>,
     viewModel: ReservationViewModel
 ) {
-    val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
-    if (locationPermissionState.status.isGranted) {
-        LaunchedEffect(Unit) { viewModel.startLocationUpdates() }
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val userLocation by viewModel.userLocation.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.startLocationUpdates()
     }
 
-    if (locationPermissionState.status.isGranted) {
-        val userLocation by viewModel.userLocation.collectAsState()
-        val cameraPositionState = rememberCameraPositionState { position = CameraPosition.fromLatLngZoom(LatLng(48.8566, 2.3522), 10f) }
-        var hasCenteredOnUser by remember { mutableStateOf(false) }
+    var selectedStyleIndex by remember { mutableIntStateOf(0) }
+    val mapStyles = listOf(
+        "Détaillé" to stringResource(Res.string.openstreetmap_style_url_detaille),
+        "Standard" to stringResource(Res.string.openstreetmap_style_url_standard),
+        "Sombre" to stringResource(Res.string.openstreetmap_style_url_sombre),
+        "Clair" to stringResource(Res.string.openstreetmap_style_url_clair),
+        "Minimal" to stringResource(Res.string.openstreetmap_style_url_minimal),
+    )
 
-        LaunchedEffect(userLocation) {
-            if (userLocation != null && !hasCenteredOnUser) {
-                val userLatLng = LatLng(userLocation!!.latitude, userLocation!!.longitude)
-                cameraPositionState.animate(update = CameraUpdateFactory.newLatLngZoom(userLatLng, 15f), durationMs = 1500)
-                hasCenteredOnUser = true
+    var showStyleSelector by remember { mutableStateOf(false) }
+    var mapLibreMap by remember { mutableStateOf<MapLibreMap?>(null) }
+    var locationComponent by remember { mutableStateOf<LocationComponent?>(null) }
+
+    val mapView = remember {
+        MapView(context)
+    }
+
+    // Fonction pour vérifier les permissions
+    fun hasLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    // Fonction pour configurer le composant de localisation
+    fun configureLocationComponent(locationComp: LocationComponent) {
+        if (hasLocationPermission()) {
+            try {
+                locationComp.isLocationComponentEnabled = true
+                locationComp.cameraMode = CameraMode.TRACKING
+                locationComp.renderMode = RenderMode.COMPASS
+            } catch (e: SecurityException) {
+                // Gestion d'erreur si les permissions sont révoquées
+                locationComp.isLocationComponentEnabled = false
+            }
+        } else {
+            locationComp.isLocationComponentEnabled = false
+        }
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val lifecycle = lifecycleOwner.lifecycle
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_CREATE -> mapView.onCreate(Bundle())
+                Lifecycle.Event.ON_START -> mapView.onStart()
+                Lifecycle.Event.ON_RESUME -> mapView.onResume()
+                Lifecycle.Event.ON_PAUSE -> mapView.onPause()
+                Lifecycle.Event.ON_STOP -> mapView.onStop()
+                Lifecycle.Event.ON_DESTROY -> mapView.onDestroy()
+                else -> {}
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose {
+            lifecycle.removeObserver(observer)
+        }
+    }
+
+    LaunchedEffect(selectedStyleIndex) {
+        mapLibreMap?.setStyle(mapStyles[selectedStyleIndex].second)
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (userLocation == null) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp)
+                    .background(
+                        Color.Black.copy(alpha = 0.7f),
+                        RoundedCornerShape(8.dp)
+                    )
+                    .padding(12.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        strokeWidth = 2.dp,
+                        color = Color.White
+                    )
+                    Text(
+                        text = stringResource(Res.string.Location_in_progress),
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
         }
 
-        val mapProperties = MapProperties(isMyLocationEnabled = true)
+        AndroidView(
+            factory = { _ ->
+                mapView.apply {
+                    getMapAsync { map ->
+                        mapLibreMap = map
+                        map.setStyle(mapStyles[selectedStyleIndex].second) { style ->
+                            val lockerBitmap = createLockerIcon(context)
+                            style.addImage("locker-icon", lockerBitmap)
 
-        GoogleMap(modifier = Modifier.fillMaxSize(), cameraPositionState = cameraPositionState, properties = mapProperties) {
-            lockers.forEach { locker ->
-                Marker(
-                    state = rememberMarkerState(position = LatLng(locker.latitude, locker.longitude)),
-                    title = locker.name,
-                    snippet = "Cliquez pour voir les détails",
-                    onClick = {
-                        viewModel.selectLocker(locker)
-                        true
+                            locationComponent = map.locationComponent.apply {
+                                activateLocationComponent(
+                                    LocationComponentActivationOptions
+                                        .builder(context, style)
+                                        .build()
+                                )
+                                // Utiliser la fonction locale pour configurer
+                                configureLocationComponent(this)
+                            }
+
+                            map.addOnMapClickListener { point ->
+                                val features = map.queryRenderedFeatures(
+                                    map.projection.toScreenLocation(point),
+                                    "locker-layer"
+                                )
+
+                                if (features.isNotEmpty()) {
+                                    val feature = features[0]
+                                    val lockerName = feature.getStringProperty("name")
+
+                                    val selectedLocker = lockers.find { it.name == lockerName }
+                                    selectedLocker?.let {
+                                        viewModel.selectLocker(it)
+                                    }
+                                }
+                                true
+                            }
+                        }
+
+                        map.uiSettings.apply {
+                            isCompassEnabled = true
+                            isRotateGesturesEnabled = true
+                            isTiltGesturesEnabled = false
+                            isAttributionEnabled = true
+                            isLogoEnabled = true
+                        }
                     }
-                )
-            }
-        }
-    } else {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                }
+            },
+            update = { view ->
+                view.getMapAsync { map ->
+                    map.getStyle { style ->
+                        map.clear()
+
+                        lockers.forEach { locker ->
+                            val markerOptions = org.maplibre.android.annotations.MarkerOptions()
+                                .position(org.maplibre.android.geometry.LatLng(locker.latitude, locker.longitude))
+                                .title(locker.name)
+                                .snippet(locker.location)
+
+                            val marker = map.addMarker(markerOptions)
+                        }
+
+                        map.setOnMarkerClickListener { marker ->
+                            val clickedLocker = lockers.find { locker ->
+                                locker.latitude == marker.position.latitude &&
+                                        locker.longitude == marker.position.longitude
+                            }
+
+                            clickedLocker?.let { locker ->
+                                viewModel.selectLocker(locker)
+                            }
+
+                            true
+                        }
+
+                        userLocation?.let { location ->
+                            map.animateCamera(
+                                org.maplibre.android.camera.CameraUpdateFactory.newLatLngZoom(
+                                    org.maplibre.android.geometry.LatLng(location.latitude, location.longitude),
+                                    15.0
+                                )
+                            )
+                        } ?: run {
+                            if (lockers.isNotEmpty()) {
+                                val firstLocker = lockers.first()
+                                map.animateCamera(
+                                    org.maplibre.android.camera.CameraUpdateFactory.newLatLngZoom(
+                                        org.maplibre.android.geometry.LatLng(firstLocker.latitude, firstLocker.longitude),
+                                        12.0
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+
+        FloatingActionButton(
+            onClick = { showStyleSelector = true },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
         ) {
-            Text(stringResource(Res.string.Location_permission_required))
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(stringResource(Res.string.Location_permission_explanation))
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { locationPermissionState.launchPermissionRequest() }) {
-                Text(stringResource(Res.string.Grant_permission))
+            Icon(Icons.Default.Settings, contentDescription = stringResource(Res.string.Change_map_style))
+        }
+
+        if (showStyleSelector) {
+            Card(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.Map_style),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    mapStyles.forEachIndexed { index, (name, _) ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    selectedStyleIndex = index
+                                    showStyleSelector = false
+                                }
+                                .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = selectedStyleIndex == index,
+                                onClick = {
+                                    selectedStyleIndex = index
+                                    showStyleSelector = false
+                                }
+                            )
+                            Text(
+                                text = name,
+                                modifier = Modifier.padding(start = 8.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Button(
+                        onClick = { showStyleSelector = false },
+                        modifier = Modifier.align(Alignment.End)
+                    ) {
+                        Text(stringResource(Res.string.Close))
+                    }
+                }
             }
         }
     }
+}
+
+private fun createLockerIcon(context: android.content.Context): Bitmap {
+    val size = 48
+    val bitmap = createBitmap(size, size)
+    val canvas = Canvas(bitmap)
+
+    val paint = Paint().apply {
+        isAntiAlias = true
+        color = "#FF4444".toColorInt()
+        style = Paint.Style.FILL
+    }
+
+    val radius = size / 2f - 2f
+    canvas.drawCircle(size / 2f, size / 2f, radius, paint)
+
+    paint.apply {
+        color = android.graphics.Color.WHITE
+        style = Paint.Style.STROKE
+        strokeWidth = 2f
+    }
+    canvas.drawCircle(size / 2f, size / 2f, radius, paint)
+
+    paint.apply {
+        color = android.graphics.Color.WHITE
+        style = Paint.Style.FILL
+        textSize = 20f
+        textAlign = Paint.Align.CENTER
+    }
+
+    val lockSymbol = "🔒"
+    val bounds = Rect()
+    paint.getTextBounds(lockSymbol, 0, lockSymbol.length, bounds)
+    canvas.drawText(lockSymbol, size / 2f, size / 2f + bounds.height() / 2f, paint)
+
+    return bitmap
 }
 
 @Composable
@@ -222,7 +499,7 @@ private fun LoadingState() {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             CircularProgressIndicator()
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Loading...")
+            Text(stringResource(Res.string.Loading))
         }
     }
 }

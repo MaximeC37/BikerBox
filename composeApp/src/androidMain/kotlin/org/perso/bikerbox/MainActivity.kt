@@ -1,11 +1,15 @@
 package org.perso.bikerbox
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import org.perso.bikerbox.data.repository.AuthRepositoryFactory
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.FirebaseApp
 import org.perso.bikerbox.data.repository.LockersProvider
 import org.perso.bikerbox.data.repository.firebase.FirebaseLockersRepository
 import org.perso.bikerbox.domain.usecases.CancelReservationUseCase
@@ -19,26 +23,16 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LockersProvider.initialize(FirebaseLockersRepository())
-        val app = applicationContext as BikerBoxApplication
 
         setContent {
-            val lockersRepository = LockersProvider.repository
-            val authRepository = AuthRepositoryFactory.createRepository()
+            val app = applicationContext as BikerBoxApplication
 
-            val getAvailableLockersUseCase = GetAvailableLockersUseCase(lockersRepository)
-            val makeReservationUseCase = MakeReservationUseCase(lockersRepository)
-            val getUserReservationsUseCase = GetUserReservationsUseCase(lockersRepository)
-            val cancelReservationUseCase = CancelReservationUseCase(lockersRepository)
-
-            val reservationViewModel = ReservationViewModel(
-                getAvailableLockersUseCase = getAvailableLockersUseCase,
-                makeReservationUseCase = makeReservationUseCase,
-                getUserReservationsUseCase = getUserReservationsUseCase,
-                cancelReservationUseCase = cancelReservationUseCase,
-                locationProvider = app.locationProvider
+            val reservationViewModel: ReservationViewModel = viewModel(
+                factory = ReservationViewModelFactory(app)
             )
-            val authViewModel = AuthViewModel(authRepository)
+            val authViewModel: AuthViewModel = viewModel(
+                factory = AuthViewModelFactory(app)
+            )
 
             App(
                 reservationViewModel = reservationViewModel,
@@ -48,29 +42,62 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+class ReservationViewModelFactory(
+    private val app: BikerBoxApplication
+) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ReservationViewModel::class.java)) {
+            val lockersRepository = LockersProvider.repository
+            return ReservationViewModel(
+                getAvailableLockersUseCase = GetAvailableLockersUseCase(lockersRepository),
+                makeReservationUseCase = MakeReservationUseCase(lockersRepository),
+                getUserReservationsUseCase = GetUserReservationsUseCase(lockersRepository),
+                cancelReservationUseCase = CancelReservationUseCase(lockersRepository),
+                locationProvider = app.locationProvider
+            ) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+class AuthViewModelFactory(
+    private val app: BikerBoxApplication
+) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
+            return AuthViewModel(app.authRepository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
+
+    try {
+        FirebaseApp.initializeApp(context)
+    } catch (_: Exception) {
+    }
+
     val app = context.applicationContext as BikerBoxApplication
-
     LockersProvider.initialize(FirebaseLockersRepository())
-    val lockersRepository = LockersProvider.repository
-    val authRepository = AuthRepositoryFactory.createRepository()
 
-    val getAvailableLockersUseCase = GetAvailableLockersUseCase(lockersRepository)
-    val makeReservationUseCase = MakeReservationUseCase(lockersRepository)
-    val getUserReservationsUseCase = GetUserReservationsUseCase(lockersRepository)
-    val cancelReservationUseCase = CancelReservationUseCase(lockersRepository)
-
-    val reservationViewModel = ReservationViewModel(
-        getAvailableLockersUseCase,
-        makeReservationUseCase,
-        getUserReservationsUseCase,
-        cancelReservationUseCase,
+    val mockReservationViewModel = ReservationViewModel(
+        GetAvailableLockersUseCase(LockersProvider.repository),
+        MakeReservationUseCase(LockersProvider.repository),
+        GetUserReservationsUseCase(LockersProvider.repository),
+        CancelReservationUseCase(LockersProvider.repository),
         app.locationProvider
     )
-    val authViewModel = AuthViewModel(authRepository)
+    val mockAuthViewModel = AuthViewModel(app.authRepository)
 
-    App(reservationViewModel = reservationViewModel, authViewModel = authViewModel)
+    App(
+        reservationViewModel = mockReservationViewModel,
+        authViewModel = mockAuthViewModel
+    )
 }

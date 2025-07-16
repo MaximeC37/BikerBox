@@ -18,8 +18,10 @@
     <string name="Cancel">Annuler</string>
     <string name="Cardholder_Name">Nom du titulaire</string>
     <string name="Card_number">Numéro de carte</string>
+    <string name="Change_map_style">Changer le style de carte</string>
     <string name="Choose">Choisir</string>
     <string name="Choose_a_date">Choisir une date</string>
+    <string name="Close">Fermer</string>
     <string name="Code">Code</string>
     <string name="Confirm">Confirmer</string>
     <string name="Confirm_Cancellation">Confirmer l'annulation</string>
@@ -67,6 +69,7 @@
     <string name="Loading_reservation_details">Chargement des détails de la réservation...</string>
     <string name="Loading_your_reservations">Chargement de vos réservations...</string>
     <string name="Location_access">Accès à la localisation</string>
+    <string name="Location_in_progress">Localisation en cours...</string>
     <string name="Location_denied_permanently">Localisation refusée</string>
     <string name="Location_permission_denied_message">La permission de localisation a été refusée de manière permanente. Vous pouvez l'activer dans les paramètres de l'application.</string>
     <string name="Location_permission_explanation">Pour vous montrer les stations BikerBox à proximité, veuillez autoriser l'accès à votre localisation.</string>
@@ -82,6 +85,7 @@
     <string name="Log_out">Se déconnecter</string>
     <string name="march">mars</string>
     <string name="Map">Carte</string>
+    <string name="Map_style">Style de carte</string>
     <string name="may">mai</string>
     <string name="Medium">Moyen</string>
     <string name="Method">Méthode</string>
@@ -98,6 +102,11 @@
     <string name="one_helmet_and_one_coat">1 casque + 1 manteau</string>
     <string name="Other_methods">Autres méthodes</string>
     <string name="Open_settings">Ouvrir les paramètres</string>
+    <string name="openstreetmap_style_url_standard">https://demotiles.maplibre.org/style.json</string>
+    <string name="openstreetmap_style_url_sombre">https://tiles.openfreemap.org/styles/dark</string>
+    <string name="openstreetmap_style_url_clair">https://tiles.openfreemap.org/styles/bright</string>
+    <string name="openstreetmap_style_url_minimal">https://tiles.openfreemap.org/styles/positron</string>
+    <string name="openstreetmap_style_url_detaille">https://tiles.openfreemap.org/styles/liberty</string>
     <string name="Password">Mot de passe</string>
     <string name="Password_Reset">Réinitialisation du mot de passe</string>
     <string name="Passwords_do_not_match">Les mots de passe ne correspondent pas</string>
